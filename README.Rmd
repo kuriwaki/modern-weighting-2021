@@ -120,10 +120,25 @@ poll_rake %>%
 
 # Increased Variance Due to Weighting / Design Effect
 
+Mean Square Error formula
+
+Kish's design effect
+
+
+# MRP
+
+Many cells problem
+
+Shrinkage
 
 
 # Propensity Score (IPW) vs. Balancing Score
 
+Links to Causal Inference
 
+Coarsened Exact Matching
 
-# MRP
+Balance Test Fallacy
+
+Entropy Balancing / CBPS
+

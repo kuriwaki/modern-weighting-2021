@@ -145,6 +145,14 @@ poll_rake %>%
 
 # Increased Variance Due to Weighting / Design Effect
 
+# MRP
+
 # Propensity Score (IPW) vs. Balancing Score
 
-# MRP
+Links to Causal Inference
+
+Coarsened Exact Matching
+
+Balance Test Fallacy
+
+Entropy Balancing / CBPS
