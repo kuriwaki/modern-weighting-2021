@@ -12,18 +12,19 @@ Overview of Modern Survey Weighting
 <!-- badges: start -->
 <!-- badges: end -->
 
-Reweighting to make a dataset representative is a core operation in data
-science and survey research, with equally fundamental connection to
-classical statistical theory. Moreover, the connection between survey
-inference to causal inference is resurging as selection bias has become
-a more prominent problem in opt-in surveys, and traditional approaches
-that focus on researcher-designed sampling become somewhat irrelevant.
-However, survey weighting is not taught in standard political science
-graduate training. Here I walk through the core concepts by drawing
-connections to concepts that are more frequently covered in political
-science training, like causal inference or machine learning. I presume a
-level of familiarity with a 1st year PhD methods class covering
-bias-variance, OLS, and a bit of research design.
+Reweighting your data to make it representative of a population of
+interest is a ubiquitous operation in data science and survey research.
+The procedure has fundamental connections to classical statistical
+theory. And recently, the connection between survey inference to causal
+inference is resurging: Selection bias has become prominent in opt-in
+surveys, and traditional approaches that focus on researcher-designed
+sampling have become somewhat irrelevant. However, survey weighting is
+not taught in standard political science graduate training. Here I walk
+through these core concepts taking the CCES as an example. I draw
+connections to concepts which are often covered in political science
+training, like causal inference or machine learning. I presume a level
+of familiarity with a 1st year PhD methods class covering bias-variance,
+OLS, and some research design.
 
 ------------------------------------------------------------------------
 
@@ -55,9 +56,7 @@ pop_micro <- read_rds("data/pop_microdata.rds")
 ## The Power and Simplicity of Poststratification
 
 > “The purpose of poststratification is to correct for known differences
-> between sample and population.”
-
--   Gelman (2007)
+> between sample and population.” — Gelman (2007)
 
 Q: What is the distributon of education in the sample? In the
 population?
@@ -220,18 +219,18 @@ Q: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
-    #>    ID     race     educ          Spred
-    #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 314876 Hispanic Some College 0.0777
-    #>  2 303445 White    4-Year       0.155 
-    #>  3 287173 Black    Post-Grad    0.161 
-    #>  4 278894 White    Some College 0.0817
-    #>  5 298566 Asian    Post-Grad    0.0835
-    #>  6 300886 White    4-Year       0.122 
-    #>  7 303433 Black    Some College 0.0805
-    #>  8 284030 White    Post-Grad    0.262 
-    #>  9 318971 Hispanic Post-Grad    0.109 
-    #> 10 273789 White    HS or Less   0.0644
+    #>    ID     race  educ          Spred
+    #>    <chr>  <fct> <fct>         <dbl>
+    #>  1 318299 White Some College 0.118 
+    #>  2 302216 White 4-Year       0.158 
+    #>  3 300142 White HS or Less   0.0441
+    #>  4 326741 White Post-Grad    0.176 
+    #>  5 322297 White HS or Less   0.0525
+    #>  6 274744 White HS or Less   0.0477
+    #>  7 321178 White Some College 0.102 
+    #>  8 297369 Black Some College 0.114 
+    #>  9 287425 White 4-Year       0.122 
+    #> 10 304713 White 4-Year       0.160
 
 Q: What are the issues in Propensity Score?
 

@@ -24,7 +24,7 @@ _Last presented July 28, 2021_
 <!-- badges: start -->
 <!-- badges: end -->
 
-Reweighting to make a dataset representative is a core  operation in data science and survey research, with equally fundamental connection to classical statistical theory. Moreover, the connection between survey inference to causal inference is resurging as selection bias has become a more prominent problem in opt-in surveys, and traditional approaches that focus on researcher-designed sampling become somewhat irrelevant. However, survey weighting is not taught in standard political science graduate training. Here I walk through the core concepts by drawing connections to concepts that are more frequently covered in political science training, like causal inference or machine learning.    I presume a level of familiarity with a 1st year PhD methods class covering bias-variance, OLS, and a bit of research design.
+Reweighting your data to make it representative of a population of interest is a ubiquitous operation in data science and survey research. The procedure has fundamental connections to classical statistical theory. And recently, the connection between survey inference to causal inference is resurging: Selection bias has become prominent in opt-in surveys, and traditional approaches that focus on researcher-designed sampling have become somewhat irrelevant. However, survey weighting is not taught in standard political science graduate training. Here I walk through these core concepts taking the CCES as an example.  I draw connections to concepts which are often covered in political science training, like causal inference or machine learning.    I presume a level of familiarity with a 1st year PhD methods class covering bias-variance, OLS, and some research design.
 
 ------
 
@@ -56,9 +56,7 @@ pop_micro <- read_rds("data/pop_microdata.rds")
 
 ## The Power and Simplicity of Poststratification
 
-> "The purpose of poststratification is to correct for known differences between sample and population."
-
-- Gelman (2007)
+> "The purpose of poststratification is to correct for known differences between sample and population." --- Gelman (2007)
 
 Q: What is the distributon of education in the sample? In the population?
 
