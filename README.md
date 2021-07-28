@@ -160,6 +160,8 @@ are the components?
 Q: Does weighting tend to increase or decrease the standard error of the
 estimator? The effective sample size? The design effect? Why?
 
+ 
+
 ## How is MRP Different?
 
 > “Regression modeling is a potentially attractive alter- native to
@@ -231,18 +233,18 @@ Q: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
-    #>    ID     race     educ          Spred
-    #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 277557 White    4-Year       0.207 
-    #>  2 295645 White    4-Year       0.147 
-    #>  3 277589 White    Some College 0.0993
-    #>  4 266719 White    4-Year       0.135 
-    #>  5 325420 White    Some College 0.102 
-    #>  6 294690 Hispanic 4-Year       0.0956
-    #>  7 312845 Black    Some College 0.0673
-    #>  8 307452 White    HS or Less   0.0596
-    #>  9 313949 White    Some College 0.128 
-    #> 10 288373 Hispanic 4-Year       0.124
+    #>    ID     race      educ          Spred
+    #>    <chr>  <fct>     <fct>         <dbl>
+    #>  1 321247 White     Post-Grad    0.178 
+    #>  2 267757 White     Post-Grad    0.170 
+    #>  3 271954 White     HS or Less   0.0653
+    #>  4 300769 White     4-Year       0.156 
+    #>  5 264772 White     Post-Grad    0.138 
+    #>  6 293178 Asian     HS or Less   0.0377
+    #>  7 323780 White     4-Year       0.158 
+    #>  8 278979 All Other 4-Year       0.106 
+    #>  9 281981 White     HS or Less   0.0799
+    #> 10 277394 All Other Some College 0.0678
 
 Q: What are the issues in Propensity Score?
 

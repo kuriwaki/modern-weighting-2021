@@ -177,7 +177,7 @@ var(rwt)
 design_effect(rwt)
 ```
 
-
+$~$
 
 ## How is MRP Different?
 
