@@ -39,6 +39,9 @@ Download this repo by
 a **Rstudio Project** of it (From Version Control Repository, Github,
 `"https://github.com/kuriwaki/modern-weighting-2021"`).
 
+Start a new R script (or Rmd if you prefer) in the same repository,
+root.
+
 Load libraries
 
 ``` r
@@ -54,8 +57,14 @@ Read in data as
 
 ``` r
 poll <- read_rds("data/poll.rds")
-pop_micro <- read_rds("data/pop_microdata.rds")
+frame <- read_rds("data/pop_microdata.rds")
 ```
+
+Note: how to read this document. The preview on github is a compiled
+version of README.Rmd. The README.Rmd has the code to produce all the
+results, but the preview only shows the results. If you need to check
+the answers, you can check the Rmd. Alternatively, you can convert the
+solutions as a R script with `knitr::purl("README.Rmd")`.
 
  
 
@@ -192,10 +201,10 @@ Let’s treat the values as factors now
 poll_fct <- poll %>% 
   mutate(educ = as_factor(educ), race = as_factor(race))
 
-pop_fct <- pop_micro %>% 
+frame_fct <- frame %>% 
   mutate(educ = as_factor(educ), race = as_factor(race)) 
 
-tgt_fct <- pop_fct %>% 
+tgt_fct <- frame_fct %>% 
   count(educ, race)
 ```
 
@@ -248,18 +257,18 @@ Q: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
-    #>    ID     race      educ          Spred
-    #>    <chr>  <fct>     <fct>         <dbl>
-    #>  1 326689 White     4-Year       0.147 
-    #>  2 270519 White     Some College 0.0502
-    #>  3 305279 Black     HS or Less   0.0525
-    #>  4 292198 White     Some College 0.0943
-    #>  5 273182 White     Some College 0.101 
-    #>  6 319966 White     Some College 0.118 
-    #>  7 280435 White     Some College 0.142 
-    #>  8 320842 White     4-Year       0.122 
-    #>  9 299577 All Other HS or Less   0.0373
-    #> 10 323925 White     4-Year       0.0832
+    #>    ID     race     educ          Spred
+    #>    <chr>  <fct>    <fct>         <dbl>
+    #>  1 289800 White    4-Year       0.120 
+    #>  2 293897 Black    HS or Less   0.0525
+    #>  3 293827 Black    Some College 0.0613
+    #>  4 313452 Hispanic Some College 0.0737
+    #>  5 297835 White    HS or Less   0.0653
+    #>  6 315213 White    4-Year       0.111 
+    #>  7 318012 Hispanic 4-Year       0.124 
+    #>  8 318457 White    HS or Less   0.0896
+    #>  9 296136 White    Post-Grad    0.136 
+    #> 10 308651 White    Post-Grad    0.166
 
 Q: What are the issues in Propensity Score?
 

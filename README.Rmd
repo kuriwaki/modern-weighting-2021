@@ -35,6 +35,8 @@ Reweighting your data to make it representative of a population of interest is a
 
 Download this repo by [creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) a **Rstudio Project** of it (From Version Control Repository, Github, `"https://github.com/kuriwaki/modern-weighting-2021"`).
 
+Start a new R script (or Rmd if you prefer) in the same repository, root.
+
 Load libraries
 
 ```{r, echo = TRUE, message=FALSE}
@@ -51,9 +53,11 @@ Read in data as
 
 ```{r, echo = TRUE}
 poll <- read_rds("data/poll.rds")
-pop_micro <- read_rds("data/pop_microdata.rds")
+frame <- read_rds("data/pop_microdata.rds")
 ```
 
+
+Note: how to read this document. The preview on github is a compiled version of README.Rmd. The README.Rmd has the code to produce all the results, but the preview only shows the results. If you need to check the answers, you can check the Rmd. Alternatively, you can convert the solutions as a R script with `knitr::purl("README.Rmd")`.
 
 
 $~$
@@ -66,7 +70,7 @@ Q: What is the distribution of education in the sample? In the population?
 
 ```{r}
 poll %>% count(educ) %>% mutate(frac = percent(n / sum(n), accuracy = 1))
-pop_micro %>% count(educ) %>% mutate(frac = percent(n / sum(n), accuracy = 1))
+frame %>% count(educ) %>% mutate(frac = percent(n / sum(n), accuracy = 1))
 
 ```
 
@@ -74,7 +78,9 @@ pop_micro %>% count(educ) %>% mutate(frac = percent(n / sum(n), accuracy = 1))
 Q: What are the weights that correct for this imbalance?
 
 ```{r}
-edu_tgt <- pop_micro %>% count(educ) %>% transmute(educ, pop_frac = n / sum(n))
+edu_tgt <- frame %>% 
+  count(educ) %>% 
+  transmute(educ, pop_frac = n / sum(n))
 
 poll_strat <- poll %>% 
   count(educ) %>% 
@@ -97,7 +103,7 @@ Q: Extension: Explain how you would do the same reweighting but for education an
 - What is the distribution of race and education in the population?
 
 ```{r}
-xtabs(~ as_factor(educ) + as_factor(race), pop_micro) %>% 
+xtabs(~ as_factor(educ) + as_factor(race), frame) %>% 
   prop.table() %>% 
   round(digits = 2) %>% 
   addmargins()
@@ -116,7 +122,7 @@ xtabs(~ as_factor(educ) + as_factor(race), poll) %>%
 Q: Estimate those weights. How does it differ from the previous weights?
 
 ```{r}
-edurace_tgt <- pop_micro %>% 
+edurace_tgt <- frame %>% 
   count(educ, race) %>% 
   transmute(educ, race, pop_frac = n / sum(n))
 
@@ -176,7 +182,7 @@ target_rake <- list(
   educ = c(`1` = 0.40, `2` = 0.35, `3` = 0.15, `4` = 0.10)
 )
 
-poll_rake <- harvest(poll,  target_rake, weight_column = "rake_weight")
+poll_rake <- harvest(data = poll, target = target_rake, weight_column = "rake_weight")
 ```
 
 
@@ -253,10 +259,10 @@ Let's treat the values as factors now
 poll_fct <- poll %>% 
   mutate(educ = as_factor(educ), race = as_factor(race))
 
-pop_fct <- pop_micro %>% 
+frame_fct <- frame %>% 
   mutate(educ = as_factor(educ), race = as_factor(race)) 
 
-tgt_fct <- pop_fct %>% 
+tgt_fct <- frame_fct %>% 
   count(educ, race)
 ```
 
@@ -294,16 +300,15 @@ $~$
 Q: Using the population data and matching on ID, create a propensity score.
 
 ```{r}
-pop_sel <- left_join(
-  pop_fct,
+frame_sel <- left_join(
+  frame_fct,
   transmute(poll_fct, ID, S = 1),
-  by = "ID"
-) %>% 
+  by = "ID") %>% 
   mutate(S = replace_na(S, 0))
 
-fit_sel <- glm(S ~ race + educ + state, pop_sel, family = binomial)
+fit_sel <- glm(S ~ race + educ + state, frame_sel, family = binomial)
 
-pop_sel %>% 
+frame_sel %>% 
   mutate(Spred = predict(fit_sel, ., type = "response")) %>% 
   select(ID, race, educ, Spred) %>% 
   sample_n(10)
