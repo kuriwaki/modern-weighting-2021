@@ -7,15 +7,16 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo = FALSE, # don't show "answers"
   comment = "#>"
 )
 ```
 
-# An Introduction to Modern Weighting
+# Overview to Modern Survey Weighting
 
-**Shiro Kuriwaki**
+*Shiro Kuriwaki*
 
-**July 28, 2021 Workshop**
+*July 28, 2021 Workshop*
 
 
 <!-- badges: start -->
@@ -31,7 +32,7 @@ Download this repo as a **Rstudio Project** (From Remote Repository, Github, `"k
 
 Load libraries
 
-```{r, message=FALSE}
+```{r, echo = TRUE, message=FALSE}
 library(tidyverse) # Easily Install and Load the 'Tidyverse'
 library(scales) # Scale Functions for Visualization
 
@@ -43,7 +44,7 @@ library(lme4) # Linear Mixed-Effects Models using 'Eigen' and S4
 
 Read in data as
 
-```{r}
+```{r, echo = TRUE}
 poll <- read_rds("data/poll.rds")
 pop_micro <- read_rds("data/pop_microdata.rds")
 ```
@@ -51,7 +52,7 @@ pop_micro <- read_rds("data/pop_microdata.rds")
 
 
 
-# Poststratification
+## Poststratification
 
 Q: What is the distributon of education in the sample? In the population?
 
@@ -90,17 +91,17 @@ xtabs(~ as_factor(educ) + as_factor(race), pop_micro) %>%
 ```
 
 
-# Raking
+## Raking
 
 Q: What is the distribution of race and education in the survey. 
 
 Now suppose you did NOT know the population _joint_ distribution of race x education, but you knew the _marginals_. Suppose that
 
-* White: 70%
-* Black: 12%
-* Hispanic: 8%
-* Asian: 4%
-* Other 6%
+* White (1): 70%
+* Black (2): 12%
+* Hispanic (3) : 8%
+* Asian (4): 4%
+* Other (5): 6%
 
 and
 
@@ -128,7 +129,7 @@ with(poll_rake, plot(weight, rake_weight, bty = "n", pch = 19, cex = 0.5, xlab =
 
 Q: What are some issues with doing poststratiifcation everywhere?
 
-# Increased Variance Due to Weighting / Design Effect
+## Increased Variance Due to Weighting / Design Effect
 
 Mean Square Error formula
 
@@ -156,9 +157,11 @@ design_effect(rwt)
 
 
 
-# MRP
+## How is MRP Different?
 
-```{r}
+Let's treat the values as factors now
+
+```{r, echo = TRUE}
 poll_fct <- poll %>% 
   mutate(educ = as_factor(educ), race = as_factor(race))
 
@@ -170,7 +173,7 @@ tgt_fct <- pop_fct %>%
 ```
 
 
-Many cells problem
+Q: What are the predicted values of the outcome in each of the poststratification cells?
 
 ```{r}
 fit_logit <- glm(Y ~ educ*race, data = poll_fct, family = binomial)
@@ -183,6 +186,8 @@ cells_Ypred
 ```
 
 
+Q: What is the "MRP" estimate for Y in the population then?
+
 ```{r}
 cells_Ypred %>% 
   summarize(Ypred = weighted.mean(Ypred, w = n))
@@ -192,7 +197,7 @@ cells_Ypred %>%
 Shrinkage
 
 
-# Propensity Score (IPW) vs. Balancing Score
+## Propensity Score (IPW) vs. Balancing Score
 
 Q: Using the population data and matching on ID, create a propensity score.
 
