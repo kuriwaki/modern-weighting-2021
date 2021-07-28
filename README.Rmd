@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview to Modern Survey Weighting
+# Overview of Modern Survey Weighting
 
 *Shiro Kuriwaki*
 
@@ -97,11 +97,11 @@ Q: What is the distribution of race and education in the survey.
 
 Now suppose you did NOT know the population _joint_ distribution of race x education, but you knew the _marginals_. Suppose that
 
-* White (1): 70%
+* White (1): 72%
 * Black (2): 12%
-* Hispanic (3) : 8%
-* Asian (4): 4%
-* Other (5): 6%
+* Hispanic (3) : 10%
+* Asian (4): 3%
+* Other (5): 3%
 
 and
 
@@ -114,7 +114,7 @@ and
 
 ```{r}
 target_rake <- list(
-  race = c(`1` = 0.70, `2` = 0.12, `3` = 0.08, `4` = 0.04, `5` = 0.06),
+  race = c(`1` = 0.72, `2` = 0.12, `3` = 0.10, `4` = 0.03, `5` = 0.03),
   educ = c(`1` = 0.40, `2` = 0.35, `3` = 0.15, `4` = 0.10)
 )
 
@@ -131,8 +131,6 @@ Q: What are some issues with doing poststratiifcation everywhere?
 
 ## Increased Variance Due to Weighting / Design Effect
 
-Mean Square Error formula
-
 
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What are the components?
 
@@ -140,10 +138,7 @@ Q: What do you need to compute the MSE (or RMSE) of an estimate? What are the co
 Q: Does weighting tend to increase or decrease the standard error of the estimator? The effective sample size? The design effect? Why?
 
 
-
-Kish's design effect
-
-```{r}
+```{r, eval = FALSE}
 rwt <- poll_rake$rake_weight
 
 sum(rwt)^2 / sum(rwt^2)
@@ -173,7 +168,7 @@ tgt_fct <- pop_fct %>%
 ```
 
 
-Q: What are the predicted values of the outcome in each of the poststratification cells?
+Q: Using a logit, what are the predicted values of the outcome in each of the poststratification cells?
 
 ```{r}
 fit_logit <- glm(Y ~ educ*race, data = poll_fct, family = binomial)
@@ -194,7 +189,8 @@ cells_Ypred %>%
 ```
 
 
-Shrinkage
+Q: What are the issues with a simple logit?
+
 
 
 ## Propensity Score (IPW) vs. Balancing Score
@@ -218,16 +214,18 @@ pop_sel %>%
 ```
 
 
-Q: What are the issues in Propensity Score
+Q: What are the issues in Propensity Score?
 
-Links to Causal Inference and the Weighting vs. Matching Distinction
+
+
+Note: Links to Causal Inference and the Weighting vs. Matching Distinction
 
 - Coarsened Exact Matching
 - Balance Test Fallacy
 
 
 
-Balancing Scores: Entropy Balancing / CBPS
+Note: Balancing Scores: Entropy Balancing / CBPS
 
 # Takeaways
 

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Overview to Modern Survey Weighting
+# Overview of Modern Survey Weighting
 
 *Shiro Kuriwaki*
 
@@ -95,11 +95,11 @@ Q: What is the distribution of race and education in the survey.
 Now suppose you did NOT know the population *joint* distribution of race
 x education, but you knew the *marginals*. Suppose that
 
--   White: 70%
--   Black: 12%
--   Hispanic: 8%
--   Asian: 4%
--   Other 6%
+-   White (1): 72%
+-   Black (2): 12%
+-   Hispanic (3) : 10%
+-   Asian (4): 3%
+-   Other (5): 3%
 
 and
 
@@ -114,20 +114,11 @@ Q: What are some issues with doing poststratiifcation everywhere?
 
 ## Increased Variance Due to Weighting / Design Effect
 
-Mean Square Error formula
-
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What
 are the components?
 
 Q: Does weighting tend to increase or decrease the standard error of the
 estimator? The effective sample size? The design effect? Why?
-
-Kish’s design effect
-
-    #> [1] 627.6017
-    #> [1] 1.593367
-    #> [1] 0.5939613
-    #> [1] 1.593367
 
 ## How is MRP Different?
 
@@ -144,8 +135,8 @@ tgt_fct <- pop_fct %>%
   count(educ, race)
 ```
 
-Q: What are the predicted values of the outcome in each of the
-poststratification cells?
+Q: Using a logit, what are the predicted values of the outcome in each
+of the poststratification cells?
 
     #> # A tibble: 20 x 4
     #>    educ         race          n      Ypred
@@ -178,7 +169,7 @@ Q: What is the “MRP” estimate for Y in the population then?
     #>   <dbl>
     #> 1 0.412
 
-Shrinkage
+Q: What are the issues with a simple logit?
 
 ## Propensity Score (IPW) vs. Balancing Score
 
@@ -188,25 +179,26 @@ score.
     #> # A tibble: 10 x 4
     #>    ID     race     educ          Spred
     #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 277129 White    HS or Less   0.0903
-    #>  2 283996 White    Some College 0.118 
-    #>  3 313593 White    HS or Less   0.0683
-    #>  4 287316 White    4-Year       0.160 
-    #>  5 269237 White    Post-Grad    0.175 
-    #>  6 283855 Hispanic Some College 0.101 
-    #>  7 321041 White    Post-Grad    0.155 
-    #>  8 303332 White    HS or Less   0.0683
-    #>  9 278751 White    4-Year       0.157 
-    #> 10 277020 White    HS or Less   0.0563
+    #>  1 268448 White    Some College 0.0986
+    #>  2 303033 White    Some College 0.0817
+    #>  3 281458 White    Some College 0.0993
+    #>  4 305564 White    HS or Less   0.122 
+    #>  5 279835 White    HS or Less   0.0896
+    #>  6 319874 White    HS or Less   0.0634
+    #>  7 273231 Black    Post-Grad    0.161 
+    #>  8 311155 Hispanic Some College 0.0798
+    #>  9 265916 White    HS or Less   0.0517
+    #> 10 271471 White    Some College 0.0993
 
-Q: What are the issues in Propensity Score
+Q: What are the issues in Propensity Score?
 
-Links to Causal Inference and the Weighting vs. Matching Distinction
+Note: Links to Causal Inference and the Weighting vs. Matching
+Distinction
 
 -   Coarsened Exact Matching
 -   Balance Test Fallacy
 
-Balancing Scores: Entropy Balancing / CBPS
+Note: Balancing Scores: Entropy Balancing / CBPS
 
 # Takeaways
 
