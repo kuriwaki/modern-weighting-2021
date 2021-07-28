@@ -135,7 +135,34 @@ Kish’s design effect
 Many cells problem
 
 ``` r
-fit_glmer <- glmer(Y ~ (1 | educ), family = binomial, poll)
+fit_logit <- glm(Y ~ educ*race, family = binomial, poll)
+
+pop_micro %>% 
+  count(educ, race) %>% 
+  mutate(Ypred = predict(fit_logit, ., type = "response"))
+#> # A tibble: 20 x 4
+#>                educ          race     n Ypred
+#>           <dbl+lbl>     <int+lbl> <int> <dbl>
+#>  1 1 [HS or Less]   1 [White]      2137 0.417
+#>  2 1 [HS or Less]   2 [Black]       275 0.402
+#>  3 1 [HS or Less]   3 [Hispanic]    182 0.387
+#>  4 1 [HS or Less]   4 [Asian]        36 0.373
+#>  5 1 [HS or Less]   5 [All Other]    87 0.358
+#>  6 2 [Some College] 1 [White]      2468 0.413
+#>  7 2 [Some College] 2 [Black]       538 0.410
+#>  8 2 [Some College] 3 [Hispanic]    296 0.406
+#>  9 2 [Some College] 4 [Asian]        74 0.402
+#> 10 2 [Some College] 5 [All Other]   172 0.398
+#> 11 3 [4-Year]       1 [White]      1611 0.409
+#> 12 3 [4-Year]       2 [Black]       280 0.417
+#> 13 3 [4-Year]       3 [Hispanic]    216 0.425
+#> 14 3 [4-Year]       4 [Asian]       122 0.433
+#> 15 3 [4-Year]       5 [All Other]    94 0.440
+#> 16 4 [Post-Grad]    1 [White]      1071 0.406
+#> 17 4 [Post-Grad]    2 [Black]       106 0.425
+#> 18 4 [Post-Grad]    3 [Hispanic]     64 0.444
+#> 19 4 [Post-Grad]    4 [Asian]       114 0.463
+#> 20 4 [Post-Grad]    5 [All Other]    57 0.483
 ```
 
 Shrinkage

@@ -130,8 +130,12 @@ Kish's design effect
 
 Many cells problem
 
-```{r, eval = FALSE}
-fit_glmer <- glmer(Y ~ (1 | educ), family = binomial, poll)
+```{r}
+fit_logit <- glm(Y ~ educ*race, family = binomial, poll)
+
+pop_micro %>% 
+  count(educ, race) %>% 
+  mutate(Ypred = predict(fit_logit, ., type = "response"))
 ```
 
 
