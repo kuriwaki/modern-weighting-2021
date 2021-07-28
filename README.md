@@ -7,7 +7,11 @@ Overview of Modern Survey Weighting
 
 *Last presented July 28, 2021*
 
+ 
+
 > “Survey weighting is a mess.” – Gelman (2007)
+
+ 
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -33,7 +37,7 @@ OLS, and some research design.
 Download this repo by
 [creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
 a **Rstudio Project** of it (From Version Control Repository, Github,
-`"kuriwaki/modern-weighting-workshop-2021"`).
+`"https://github.com/kuriwaki/modern-weighting-2021"`).
 
 Load libraries
 
@@ -53,12 +57,14 @@ poll <- read_rds("data/poll.rds")
 pop_micro <- read_rds("data/pop_microdata.rds")
 ```
 
+ 
+
 ## The Power and Simplicity of Poststratification
 
 > “The purpose of poststratification is to correct for known differences
 > between sample and population.” — Gelman (2007)
 
-Q: What is the distributon of education in the sample? In the
+Q: What is the distribution of education in the sample? In the
 population?
 
     #> # A tibble: 4 x 3
@@ -115,6 +121,8 @@ education and race.
 
 Q: What are some issues with doing poststratification everywhere?
 
+ 
+
 ## Raking as an Approximation
 
 Q: Now suppose you did NOT know the population *joint* distribution of
@@ -137,6 +145,8 @@ and
 
 Q: Intuitively, what is the assumption we need to make for raking to
 give the same answer as poststratification?
+
+ 
 
 ## The Curse of Increased Variance due to Weighting
 
@@ -208,6 +218,8 @@ Q: What is the “MRP” estimate for Y in the population then?
 
 Q: What are the issues with a simple logit?
 
+ 
+
 ## Why balancing score are better than inverse propensity weighting
 
 > “Contrary to what is assumed by many theoretical statisticians, survey
@@ -219,18 +231,18 @@ Q: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
-    #>    ID     race  educ          Spred
-    #>    <chr>  <fct> <fct>         <dbl>
-    #>  1 318299 White Some College 0.118 
-    #>  2 302216 White 4-Year       0.158 
-    #>  3 300142 White HS or Less   0.0441
-    #>  4 326741 White Post-Grad    0.176 
-    #>  5 322297 White HS or Less   0.0525
-    #>  6 274744 White HS or Less   0.0477
-    #>  7 321178 White Some College 0.102 
-    #>  8 297369 Black Some College 0.114 
-    #>  9 287425 White 4-Year       0.122 
-    #> 10 304713 White 4-Year       0.160
+    #>    ID     race     educ          Spred
+    #>    <chr>  <fct>    <fct>         <dbl>
+    #>  1 277557 White    4-Year       0.207 
+    #>  2 295645 White    4-Year       0.147 
+    #>  3 277589 White    Some College 0.0993
+    #>  4 266719 White    4-Year       0.135 
+    #>  5 325420 White    Some College 0.102 
+    #>  6 294690 Hispanic 4-Year       0.0956
+    #>  7 312845 Black    Some College 0.0673
+    #>  8 307452 White    HS or Less   0.0596
+    #>  9 313949 White    Some College 0.128 
+    #> 10 288373 Hispanic 4-Year       0.124
 
 Q: What are the issues in Propensity Score?
 
@@ -257,10 +269,12 @@ Note: Balancing Scores: Entropy Balancing / CBPS
 
 # References
 
--   Devin Caughey, Adam Berinsky, Susan Chatfield, Erin Hartman, Eric
-    Schickler, and Jas Sekhon. 2020. “Target Estimation and Adjustment
-    Weighting for Survey Nonresponse and Sampling Bias”. *Elements in
-    Quantitative and Computational Methods for the Social Sciences*
+-   Devin Caughey, Adam Berinsky, Sara Chatfield, Erin Hartman, Eric
+    Schickler, and Jas Sekhon.
+    [2020](https://doi.org/10.1017/9781108879217). “Target Estimation
+    and Adjustment Weighting for Survey Nonresponse and Sampling Bias”.
+    *Elements in Quantitative and Computational Methods for the Social
+    Sciences*
 
 -   Andrew Gelman.
     [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf).
@@ -271,7 +285,7 @@ Note: Balancing Scores: Entropy Balancing / CBPS
     propensity score in observational studies for causal effects”.
     *Biometrika*
 
--   Kosuke Imai, Gary King, Elizabeth A Stuart.
+-   Kosuke Imai, Gary King, Elizabeth Stuart.
     [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf).
     “Misunderstandings between experimentalists and observationalists
     about causal inference”, *JRSS A.*

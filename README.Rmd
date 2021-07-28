@@ -17,8 +17,11 @@ _Shiro Kuriwaki_
 
 _Last presented July 28, 2021_
 
+$~$
+
 > "Survey weighting is a mess."  -- Gelman (2007)
 
+$~$
 
 
 <!-- badges: start -->
@@ -30,7 +33,7 @@ Reweighting your data to make it representative of a population of interest is a
 
 ## Setup
 
-Download this repo by [creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) a **Rstudio Project** of it (From Version Control Repository, Github, `"kuriwaki/modern-weighting-workshop-2021"`).
+Download this repo by [creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) a **Rstudio Project** of it (From Version Control Repository, Github, `"https://github.com/kuriwaki/modern-weighting-2021"`).
 
 Load libraries
 
@@ -53,12 +56,13 @@ pop_micro <- read_rds("data/pop_microdata.rds")
 
 
 
+$~$
 
 ## The Power and Simplicity of Poststratification
 
 > "The purpose of poststratification is to correct for known differences between sample and population." --- Gelman (2007)
 
-Q: What is the distributon of education in the sample? In the population?
+Q: What is the distribution of education in the sample? In the population?
 
 ```{r}
 poll %>% count(educ) %>% mutate(frac = percent(n / sum(n), accuracy = 1))
@@ -109,6 +113,7 @@ xtabs(~ as_factor(educ) + as_factor(race), poll) %>%
 
 Q: What are some issues with doing poststratification everywhere?
 
+$~$
 
 ## Raking as an Approximation
 
@@ -146,6 +151,7 @@ with(poll_rake, plot(weight, rake_weight, bty = "n", pch = 19, cex = 0.5, xlab =
 
 Q: Intuitively, what is the assumption we need to make for raking to give the same answer as poststratification?
 
+$~$
 
 ## The Curse of Increased Variance due to Weighting
 
@@ -216,6 +222,7 @@ cells_Ypred %>%
 
 Q: What are the issues with a simple logit?
 
+$~$
 
 ## Why balancing score are better than inverse propensity weighting
 
@@ -263,11 +270,11 @@ Note: Balancing Scores: Entropy Balancing / CBPS
 
 # References
 
-- Devin Caughey, Adam Berinsky, Susan Chatfield, Erin Hartman,  Eric Schickler, and Jas Sekhon. 2020. "Target Estimation and Adjustment Weighting for Survey Nonresponse and Sampling Bias". _Elements in Quantitative and Computational Methods for the Social Sciences_
+- Devin Caughey, Adam Berinsky, Sara Chatfield, Erin Hartman,  Eric Schickler, and Jas Sekhon. [2020](https://doi.org/10.1017/9781108879217). "Target Estimation and Adjustment Weighting for Survey Nonresponse and Sampling Bias". _Elements in Quantitative and Computational Methods for the Social Sciences_
 - Andrew Gelman. [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf). "Struggles with Survey Weighting and
 Regression Modeling", _Statistical Science_
 - Paul Rosenbaum, Donald Rubin. [1983]. "The central role of the propensity score in observational studies for causal effects". _Biometrika_
-- Kosuke Imai, Gary King, Elizabeth A Stuart. [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf). "Misunderstandings between experimentalists and observationalists about causal inference", _JRSS A._
+- Kosuke Imai, Gary King, Elizabeth Stuart. [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf). "Misunderstandings between experimentalists and observationalists about causal inference", _JRSS A._
   - Also see: Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). "Why Propensity Scores Should Not Be Used for Matching", _Methods Colloquium Talk_. (Article with Rich Nielsen).
 - Kosuke Imai, Marc Ratkovic. [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).  "Covariate balancing propensity score", _JRSS B_.
 
