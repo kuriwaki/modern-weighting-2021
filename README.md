@@ -162,8 +162,10 @@ design_effect(rwt)
 poll_fct <- poll %>% 
   mutate(educ = as_factor(educ), race = as_factor(race))
 
-tgt_fct <- pop_micro %>% 
-  mutate(educ = as_factor(educ), race = as_factor(race)) %>% 
+pop_fct <- pop_micro %>% 
+  mutate(educ = as_factor(educ), race = as_factor(race)) 
+
+tgt_fct <- pop_fct %>% 
   count(educ, race)
 ```
 
@@ -215,13 +217,46 @@ Shrinkage
 
 # Propensity Score (IPW) vs. Balancing Score
 
-Links to Causal Inference
+Q: Using the population data and matching on ID, create a propensity
+score.
 
-Coarsened Exact Matching
+``` r
+pop_sel <- left_join(
+  pop_fct,
+  transmute(poll_fct, ID, S = 1),
+  by = "ID"
+) %>% 
+  mutate(S = replace_na(S, 0))
 
-Balance Test Fallacy
+fit_sel <- glm(S ~ race + educ + state, pop_sel, family = binomial)
 
-Entropy Balancing / CBPS
+pop_sel %>% 
+  mutate(Spred = predict(fit_sel, ., type = "response")) %>% 
+  select(ID, race, educ, Spred) %>% 
+  sample_n(10)
+#> # A tibble: 10 x 4
+#>    ID     race      educ          Spred
+#>    <chr>  <fct>     <fct>         <dbl>
+#>  1 292453 White     4-Year       0.160 
+#>  2 276966 White     Some College 0.0931
+#>  3 272814 White     4-Year       0.218 
+#>  4 287875 White     HS or Less   0.0644
+#>  5 270983 White     Some College 0.0985
+#>  6 319743 Hispanic  Some College 0.0593
+#>  7 324220 All Other HS or Less   0.0533
+#>  8 300958 White     HS or Less   0.0707
+#>  9 309007 White     HS or Less   0.0661
+#> 10 317516 Hispanic  4-Year       0.0956
+```
+
+Q: What are the issues in Propensity Score
+
+Links to Causal Inference and the Weighting vs. Matching Distinction
+
+-   Coarsened Exact Matching
+-   Balance Test Fallacy
+
+Balancing sCores: Entropy Balancing / CBPS
 
 # References
 
@@ -229,16 +264,25 @@ Entropy Balancing / CBPS
     [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf).
     “Struggles with Survey Weighting and Regression Modeling”,
     *Statistical Science*
+
+-   Paul Rosenbaum, Donald Rubin. \[1983\]. “The central role of the
+    propensity score in observational studies for causal effects”.
+    *Biometrika*
+
 -   Kosuke Imai, Gary King, Elizabeth A Stuart.
     [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf).
     “Misunderstandings between experimentalists and observationalists
     about causal inference”, *JRSS A.*
+
+    -   Also see: Gary King.
+        [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why
+        Propensity Scores Should Not Be Used for Matching”, *Methods
+        Colloquium Talk*. (Article with Rich Nielsen).
+
 -   Kosuke Imai, Marc Ratkovic.
     [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).
     “Covariate balancing propensity score”, *JRSS B*.
--   Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why
-    Propensity Scores Should Not Be Used for Matching”, *Methods
-    Colloquium Talk*. (Article with Rich Nielsen).
+
 -   Jens Hainmueller.
     [2012](https://web.stanford.edu/~jhain/Paper/PA2012.pdf). “Entropy
     Balancing for Causal Effects: A Multivariate Reweighting Method to
