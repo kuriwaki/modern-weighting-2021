@@ -15,24 +15,9 @@ Load libraries
 
 ``` r
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
-#> ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
-#> ✓ tibble  3.1.2     ✓ dplyr   1.0.7
-#> ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-#> ✓ readr   2.0.0     ✓ forcats 0.5.1
-#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
 library(scales)
-#> 
-#> Attaching package: 'scales'
-#> The following object is masked from 'package:purrr':
-#> 
-#>     discard
-#> The following object is masked from 'package:readr':
-#> 
-#>     col_factor
 library(autumn)
+library(lme4)
 ```
 
 Read in data as
@@ -135,17 +120,25 @@ target_rake <- list(
 poll_rake <- harvest(poll,  target_rake, weight_column = "rake_weight")
 ```
 
-``` r
-poll_rake %>% 
-  ggplot(aes(x = weight, rake_weight)) +
-  geom_point()
-```
+![](README_files/figure-gfm/cces_rake_weights-1.png)<!-- -->
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+Q: What are some issues with doing poststratiifcation everywhere?
 
 # Increased Variance Due to Weighting / Design Effect
 
+Mean Square Error formula
+
+Kish’s design effect
+
 # MRP
+
+Many cells problem
+
+``` r
+fit_glmer <- glmer(Y ~ (1 | educ), family = binomial, poll)
+```
+
+Shrinkage
 
 # Propensity Score (IPW) vs. Balancing Score
 

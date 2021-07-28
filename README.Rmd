@@ -24,10 +24,11 @@ Download this repo as a Rstudio Project (From Remote Repository, Github, `"kuriw
 
 Load libraries
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse)
 library(scales)
 library(autumn)
+library(lme4)
 ```
 
 
@@ -111,12 +112,12 @@ poll_rake <- harvest(poll,  target_rake, weight_column = "rake_weight")
 ```
 
 
-```{r}
-poll_rake %>% 
-  ggplot(aes(x = weight, rake_weight)) +
-  geom_point()
+```{r cces_rake_weights, echo = FALSE}
+with(poll_rake, plot(weight, rake_weight, bty = "n", pch = 19, cex = 0.5, xlab = "CCES weights"))
 ```
 
+
+Q: What are some issues with doing poststratiifcation everywhere?
 
 # Increased Variance Due to Weighting / Design Effect
 
@@ -128,6 +129,11 @@ Kish's design effect
 # MRP
 
 Many cells problem
+
+```{r, eval = FALSE}
+fit_glmer <- glmer(Y ~ (1 | educ), family = binomial, poll)
+```
+
 
 Shrinkage
 
