@@ -80,16 +80,17 @@ poll_strat <- poll %>%
   count(educ) %>% 
   mutate(samp_frac = n / sum(n)) %>% 
   left_join(edu_tgt, by = "educ") %>% 
-  mutate(weight0 = pop_frac / samp_frac)
+  mutate(weight1 = pop_frac / samp_frac)
 
 poll_wt <- poll %>% 
   left_join(poll_strat, by = "educ")
 
 poll_wt %>% 
-  count(educ, wt = weight0) %>% 
+  count(educ, wt = weight1) %>% 
   mutate(wt_frac = n / sum(n))
 ```
 
+Q: What is the weighted proportion of `Y`? Is that closer to the population proportion of Y than the unweighted proportion?
 
 Q: Extension: Explain how you would do the same reweighting but for education and race.
 
@@ -111,11 +112,44 @@ xtabs(~ as_factor(educ) + as_factor(race), poll) %>%
   addmargins()
 ```
 
-Q: What are some issues with doing poststratification everywhere?
+
+Q: Estimate those weights. How does it differ from the previous weights?
+
+```{r}
+edurace_tgt <- pop_micro %>% 
+  count(educ, race) %>% 
+  transmute(educ, race, pop_frac = n / sum(n))
+
+poll_strat2 <- poll %>% 
+  count(educ, race) %>% 
+  mutate(samp_frac = n / sum(n)) %>% 
+  left_join(edurace_tgt, by = c("educ", "race")) %>% 
+  mutate(weight2 = pop_frac / samp_frac)
+
+poll_wt2 <- poll %>% 
+  left_join(poll_strat2, by = c("educ", "race"))
+
+compare_ps <- left_join(
+  poll_wt, 
+  select(poll_wt2, ID, weight2),
+  by = "ID")
+```
+
+
+```{r twowayps}
+with(compare_ps, 
+     plot(weight1, weight2, bty = "n", pch = 19, cex = 0.5, 
+          xlab = "Poststrat weights on education", 
+          ylab = "Poststrat weights on educ x race")
+)
+```
+
+
+Q: What are some roadblocks / issues with doing poststratification everywhere?
 
 $~$
 
-## Raking as an Approximation
+## Raking: an approximation to full poststratification
 
 Q: Now suppose you did NOT know the population _joint_ distribution of race x education, but you knew the _marginals_. Suppose that
 
@@ -134,6 +168,8 @@ and
 * Post-grad (4): 10%
 
 
+Using raking, create weights that satisfy these marginal distributions. 
+
 ```{r}
 target_rake <- list(
   race = c(`1` = 0.72, `2` = 0.12, `3` = 0.10, `4` = 0.03, `5` = 0.03),
@@ -145,7 +181,33 @@ poll_rake <- harvest(poll,  target_rake, weight_column = "rake_weight")
 
 
 ```{r cces_rake_weights, echo = FALSE}
-with(poll_rake, plot(weight, rake_weight, bty = "n", pch = 19, cex = 0.5, xlab = "CCES weights"))
+ps_rk <- left_join(
+  compare_ps, 
+  select(poll_rake, ID, matches("weight"))
+)
+
+par(mfrow = c(1, 2))
+plot(ps_rk$weight2, 
+     ps_rk$rake_weight, 
+     bty = "n", 
+     pch = 19, 
+     cex = 0.5, 
+     asp = 1,
+     xlab = "Poststrat weights",
+     ylab = "Rake weights",
+     ylim = c(0, 10),
+     xlim = c(0, 10))
+abline(0, 1, lty = "dashed")
+
+plot(ps_rk$weight, 
+     ps_rk$rake_weight, 
+     bty = "n", 
+     pch = 19, 
+     cex = 0.5,
+     asp = 1,
+     xlab = "CCES weights",
+     ylab = "Rake weights",
+     ylim = c(0, 10))
 ```
 
 
@@ -157,7 +219,7 @@ $~$
 
 > "It is not always clear how to use weights in estimating anything more complicated than a simple mean or ratios, and standard errors are tricky even with simple weighted means. " --- Gelman (2007)
 
-
+Q: What is a standard error of a survey estimator? How is it different from the standard deviation / variance of your estimates?
 
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What are the components?
 
@@ -275,7 +337,7 @@ Note: Balancing Scores: Entropy Balancing / CBPS
 Regression Modeling", _Statistical Science_
 - Paul Rosenbaum, Donald Rubin. [1983]. "The central role of the propensity score in observational studies for causal effects". _Biometrika_
 - Kosuke Imai, Gary King, Elizabeth Stuart. [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf). "Misunderstandings between experimentalists and observationalists about causal inference", _JRSS A._
-  - Also see: Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). "Why Propensity Scores Should Not Be Used for Matching", _Methods Colloquium Talk_. (Article with Rich Nielsen).
+- Also see: Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). "Why Propensity Scores Should Not Be Used for Matching", _Methods Colloquium Talk_. (Article with Rich Nielsen).
 - Kosuke Imai, Marc Ratkovic. [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).  "Covariate balancing propensity score", _JRSS B_.
 
 - Jens Hainmueller. [2012](https://web.stanford.edu/~jhain/Paper/PA2012.pdf). "Entropy Balancing for Causal Effects: A Multivariate Reweighting Method to Produce Balanced Samples in Observational Studies". _Political Analysis_

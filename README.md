@@ -92,6 +92,9 @@ Q: What are the weights that correct for this imbalance?
     #> 3 3 [4-Year]        232.   0.232
     #> 4 4 [Post-Grad]     141.   0.141
 
+Q: What is the weighted proportion of `Y`? Is that closer to the
+population proportion of Y than the unweighted proportion?
+
 Q: Extension: Explain how you would do the same reweighting but for
 education and race.
 
@@ -119,11 +122,16 @@ education and race.
     #>    Post-Grad     0.17  0.01     0.01  0.01      0.01 0.21
     #>    Sum           0.77  0.10     0.06  0.02      0.03 0.98
 
-Q: What are some issues with doing poststratification everywhere?
+Q: Estimate those weights. How does it differ from the previous weights?
+
+![](README_files/figure-gfm/twowayps-1.png)<!-- -->
+
+Q: What are some roadblocks / issues with doing poststratification
+everywhere?
 
  
 
-## Raking as an Approximation
+## Raking: an approximation to full poststratification
 
 Q: Now suppose you did NOT know the population *joint* distribution of
 race x education, but you knew the *marginals*. Suppose that
@@ -141,6 +149,10 @@ and
 -   4-Year (3): 15%
 -   Post-grad (4): 10%
 
+Using raking, create weights that satisfy these marginal distributions.
+
+    #> Joining, by = c("ID", "weight", "weight_cumulative")
+
 ![](README_files/figure-gfm/cces_rake_weights-1.png)<!-- -->
 
 Q: Intuitively, what is the assumption we need to make for raking to
@@ -153,6 +165,9 @@ give the same answer as poststratification?
 > “It is not always clear how to use weights in estimating anything more
 > complicated than a simple mean or ratios, and standard errors are
 > tricky even with simple weighted means.” — Gelman (2007)
+
+Q: What is a standard error of a survey estimator? How is it different
+from the standard deviation / variance of your estimates?
 
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What
 are the components?
@@ -235,16 +250,16 @@ score.
     #> # A tibble: 10 x 4
     #>    ID     race      educ          Spred
     #>    <chr>  <fct>     <fct>         <dbl>
-    #>  1 321247 White     Post-Grad    0.178 
-    #>  2 267757 White     Post-Grad    0.170 
-    #>  3 271954 White     HS or Less   0.0653
-    #>  4 300769 White     4-Year       0.156 
-    #>  5 264772 White     Post-Grad    0.138 
-    #>  6 293178 Asian     HS or Less   0.0377
-    #>  7 323780 White     4-Year       0.158 
-    #>  8 278979 All Other 4-Year       0.106 
-    #>  9 281981 White     HS or Less   0.0799
-    #> 10 277394 All Other Some College 0.0678
+    #>  1 326689 White     4-Year       0.147 
+    #>  2 270519 White     Some College 0.0502
+    #>  3 305279 Black     HS or Less   0.0525
+    #>  4 292198 White     Some College 0.0943
+    #>  5 273182 White     Some College 0.101 
+    #>  6 319966 White     Some College 0.118 
+    #>  7 280435 White     Some College 0.142 
+    #>  8 320842 White     4-Year       0.122 
+    #>  9 299577 All Other HS or Less   0.0373
+    #> 10 323925 White     4-Year       0.0832
 
 Q: What are the issues in Propensity Score?
 
@@ -292,10 +307,10 @@ Note: Balancing Scores: Entropy Balancing / CBPS
     “Misunderstandings between experimentalists and observationalists
     about causal inference”, *JRSS A.*
 
-    -   Also see: Gary King.
-        [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why
-        Propensity Scores Should Not Be Used for Matching”, *Methods
-        Colloquium Talk*. (Article with Rich Nielsen).
+-   Also see: Gary King.
+    [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why Propensity
+    Scores Should Not Be Used for Matching”, *Methods Colloquium Talk*.
+    (Article with Rich Nielsen).
 
 -   Kosuke Imai, Marc Ratkovic.
     [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).
