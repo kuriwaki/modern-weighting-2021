@@ -257,18 +257,18 @@ Q: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
-    #>    ID     race     educ          Spred
-    #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 289800 White    4-Year       0.120 
-    #>  2 293897 Black    HS or Less   0.0525
-    #>  3 293827 Black    Some College 0.0613
-    #>  4 313452 Hispanic Some College 0.0737
-    #>  5 297835 White    HS or Less   0.0653
-    #>  6 315213 White    4-Year       0.111 
-    #>  7 318012 Hispanic 4-Year       0.124 
-    #>  8 318457 White    HS or Less   0.0896
-    #>  9 296136 White    Post-Grad    0.136 
-    #> 10 308651 White    Post-Grad    0.166
+    #>    ID     race      educ          Spred
+    #>    <chr>  <fct>     <fct>         <dbl>
+    #>  1 281731 White     Post-Grad    0.139 
+    #>  2 267393 White     Some College 0.0985
+    #>  3 274917 White     4-Year       0.155 
+    #>  4 293848 All Other 4-Year       0.114 
+    #>  5 305754 White     HS or Less   0.0683
+    #>  6 317915 White     HS or Less   0.0441
+    #>  7 299442 White     Some College 0.100 
+    #>  8 300508 Asian     4-Year       0.0731
+    #>  9 316016 White     Some College 0.0763
+    #> 10 271816 White     4-Year       0.135
 
 Q: What are the issues in Propensity Score?
 
@@ -279,6 +279,21 @@ Distinction
 -   Balance Test Fallacy
 
 Note: Balancing Scores: Entropy Balancing / CBPS
+
+Load packages and start with a small sample.
+
+    #> # A tibble: 2 x 2
+    #>       S     n
+    #>   <dbl> <int>
+    #> 1     0   925
+    #> 2     1    75
+
+Q: Compute a Covariate Balancing Score Weights from the small frame, and
+same with ebal scores
+
+    #> Converged within tolerance
+
+![](README_files/figure-gfm/cbps-ebal-1.png)<!-- -->
 
 # Takeaways
 

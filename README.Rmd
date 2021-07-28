@@ -326,6 +326,53 @@ Note: Links to Causal Inference and the Weighting vs. Matching Distinction
 
 Note: Balancing Scores: Entropy Balancing / CBPS
 
+Load packages and start with a small sample.
+
+```{r, message = FALSE}
+library(ebal)
+library(CBPS)
+
+select <- dplyr::select
+
+
+set.seed(02130)
+frame_samp <- sample_frac(frame_sel, 0.10)
+count(frame_samp, S)
+```
+
+Q: Compute a Covariate Balancing Score Weights from the small frame, and same with ebal scores
+
+```{r cbps}
+
+fit_cbps <- CBPS(S ~ race + educ + state, data = frame_samp, ATT = 0)
+
+
+```
+
+
+```{r}
+frame_samp_X <- model.matrix( ~ educ + race + state - 1, frame_samp)[, -1]
+
+fit_ebal <- ebalance(Treatment = frame_samp$S,
+                     X = frame_samp_X)
+
+```
+
+```{r cbps-ebal}
+par(mfrow = c(1, 2))
+plot(frame_samp$weight[frame_samp$S == 1],
+     1 / fit_cbps$fitted.values[frame_samp$S == 1], 
+     bty = "n",
+     xlab = "CCES weights",
+     ylab = "1 over CBPS weights")
+plot(frame_samp$weight[frame_samp$S == 1],
+     fit_ebal$w[frame_samp$S == 1], 
+     bty = "n",
+     xlab = "CCES weights",
+     ylab = "ebal weights")
+```
+
+
 # Takeaways
 
 1. **Survey inference is causal inference** where the treatment is selection
