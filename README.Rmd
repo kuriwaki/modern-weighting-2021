@@ -11,28 +11,33 @@ knitr::opts_chunk$set(
 )
 ```
 
-# An Introduction to Modern Weighting (2021 Workshop)
+# An Introduction to Modern Weighting
 
-Shiro Kuriwaki
+**Shiro Kuriwaki**
+
+**July 28, 2021 Workshop**
+
 
 <!-- badges: start -->
 <!-- badges: end -->
 
+Reweighting to make a dataset representative is a core  operation in data science and survey research, with equally fundamental connection to classical statistical theory. Moreover, the connection between survey inference to causal inference is resurging as selection bias has become a more prominent problem in opt-in surveys, and traditional approaches that focus on researcher-designed sampling become somewhat irrelevant. However, survey weighting is not taught in standard political science graduate training. Here I walk through the core concepts by drawing connections to concepts that are more frequently covered in political science training, like causal inference or machine learning.    I presume a level of familiarity with a 1st year PhD methods class covering bias-variance, OLS, and a bit of research design.
 
+------
 
 ## Setup
 
-Download this repo as a Rstudio Project (From Remote Repository, Github, `"kuriwaki/modern-weighting-workshop-2021"`).
+Download this repo as a **Rstudio Project** (From Remote Repository, Github, `"kuriwaki/modern-weighting-workshop-2021"`).
 
 Load libraries
 
 ```{r, message=FALSE}
-library(tidyverse)
-library(scales)
+library(tidyverse) # Easily Install and Load the 'Tidyverse'
+library(scales) # Scale Functions for Visualization
 
-library(survey)
-library(autumn)
-library(lme4)
+library(survey) # Analysis of Complex Survey Samples
+library(autumn) # Fast, Modern, and Tidy-Friendly Iterative Raking
+library(lme4) # Linear Mixed-Effects Models using 'Eigen' and S4
 ```
 
 
@@ -217,12 +222,20 @@ Links to Causal Inference and the Weighting vs. Matching Distinction
 
 
 
-Balancing sCores: Entropy Balancing / CBPS
+Balancing Scores: Entropy Balancing / CBPS
 
+# Takeaways
+
+1. **Survey inference is causal inference** where the treatment is selection
+2. Total Error is **Bias^2 + Variance**
+3. Many things work "in theory" (asymptotically) but cause **variance problems** in practice: post-stratification, inverse propensity score weighting
+4. **Shrinkage** and regularization (random effects, ML) reduces variance at the cost of minimal variance
+5. **Balancing scores** guarantees balance on some marginals, while minimizing distance on others.
 
 
 # References
 
+- Devin Caughey, Adam Berinsky, Susan Chatfield, Erin Hartman,  Eric Schickler, and Jas Sekhon. 2020. "Target Estimation and Adjustment Weighting for Survey Nonresponse and Sampling Bias". _Elements in Quantitative and Computational Methods for the Social Sciences_
 - Andrew Gelman. [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf). "Struggles with Survey Weighting and
 Regression Modeling", _Statistical Science_
 - Paul Rosenbaum, Donald Rubin. [1983]. "The central role of the propensity score in observational studies for causal effects". _Biometrika_

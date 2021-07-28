@@ -1,27 +1,44 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# An Introduction to Modern Weighting (2021 Workshop)
+# An Introduction to Modern Weighting
 
-Shiro Kuriwaki
+**Shiro Kuriwaki**
+
+**July 28, 2021 Workshop**
 
 <!-- badges: start -->
 <!-- badges: end -->
 
+Reweighting to make a dataset representative is a core operation in data
+science and survey research, with equally fundamental connection to
+classical statistical theory. Moreover, the connection between survey
+inference to causal inference is resurging as selection bias has become
+a more prominent problem in opt-in surveys, and traditional approaches
+that focus on researcher-designed sampling become somewhat irrelevant.
+However, survey weighting is not taught in standard political science
+graduate training. Here I walk through the core concepts by drawing
+connections to concepts that are more frequently covered in political
+science training, like causal inference or machine learning. I presume a
+level of familiarity with a 1st year PhD methods class covering
+bias-variance, OLS, and a bit of research design.
+
+------------------------------------------------------------------------
+
 ## Setup
 
-Download this repo as a Rstudio Project (From Remote Repository, Github,
-`"kuriwaki/modern-weighting-workshop-2021"`).
+Download this repo as a **Rstudio Project** (From Remote Repository,
+Github, `"kuriwaki/modern-weighting-workshop-2021"`).
 
 Load libraries
 
 ``` r
-library(tidyverse)
-library(scales)
+library(tidyverse) # Easily Install and Load the 'Tidyverse'
+library(scales) # Scale Functions for Visualization
 
-library(survey)
-library(autumn)
-library(lme4)
+library(survey) # Analysis of Complex Survey Samples
+library(autumn) # Fast, Modern, and Tidy-Friendly Iterative Raking
+library(lme4) # Linear Mixed-Effects Models using 'Eigen' and S4
 ```
 
 Read in data as
@@ -235,18 +252,18 @@ pop_sel %>%
   select(ID, race, educ, Spred) %>% 
   sample_n(10)
 #> # A tibble: 10 x 4
-#>    ID     race      educ          Spred
-#>    <chr>  <fct>     <fct>         <dbl>
-#>  1 292453 White     4-Year       0.160 
-#>  2 276966 White     Some College 0.0931
-#>  3 272814 White     4-Year       0.218 
-#>  4 287875 White     HS or Less   0.0644
-#>  5 270983 White     Some College 0.0985
-#>  6 319743 Hispanic  Some College 0.0593
-#>  7 324220 All Other HS or Less   0.0533
-#>  8 300958 White     HS or Less   0.0707
-#>  9 309007 White     HS or Less   0.0661
-#> 10 317516 Hispanic  4-Year       0.0956
+#>    ID     race     educ          Spred
+#>    <chr>  <fct>    <fct>         <dbl>
+#>  1 275052 White    Post-Grad    0.117 
+#>  2 307820 White    HS or Less   0.0689
+#>  3 314979 White    Some College 0.0993
+#>  4 278490 White    HS or Less   0.0727
+#>  5 300603 Hispanic HS or Less   0.0506
+#>  6 317244 White    HS or Less   0.0950
+#>  7 312610 White    Some College 0.102 
+#>  8 274760 Black    4-Year       0.117 
+#>  9 323001 White    Post-Grad    0.168 
+#> 10 273101 Black    4-Year       0.134
 ```
 
 Q: What are the issues in Propensity Score
@@ -256,9 +273,27 @@ Links to Causal Inference and the Weighting vs. Matching Distinction
 -   Coarsened Exact Matching
 -   Balance Test Fallacy
 
-Balancing sCores: Entropy Balancing / CBPS
+Balancing Scores: Entropy Balancing / CBPS
+
+# Takeaways
+
+1.  **Survey inference is causal inference** where the treatment is
+    selection
+2.  Total Error is **Bias^2 + Variance**
+3.  Many things work “in theory” (asymptotically) but cause **variance
+    problems** in practice: post-stratification, inverse propensity
+    score weighting
+4.  **Shrinkage** and regularization (random effects, ML) reduces
+    variance at the cost of minimal variance
+5.  **Balancing scores** guarantees balance on some marginals, while
+    minimizing distance on others.
 
 # References
+
+-   Devin Caughey, Adam Berinsky, Susan Chatfield, Erin Hartman, Eric
+    Schickler, and Jas Sekhon. 2020. “Target Estimation and Adjustment
+    Weighting for Survey Nonresponse and Sampling Bias”. *Elements in
+    Quantitative and Computational Methods for the Social Sciences*
 
 -   Andrew Gelman.
     [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf).
