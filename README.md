@@ -68,7 +68,7 @@ solutions as a R script with `knitr::purl("README.Rmd")`.
 
  
 
-## The Power and Simplicity of Poststratification
+## 1. The Power and Simplicity of Poststratification
 
 > “The purpose of poststratification is to correct for known differences
 > between sample and population.” — Gelman (2007)
@@ -91,7 +91,7 @@ population?
     #> 3 3 [4-Year]        2323 23%  
     #> 4 4 [Post-Grad]     1412 14%
 
-Q: What are the weights that correct for this imbalance?
+Q 1.1: What are the weights that correct for this imbalance?
 
     #> # A tibble: 4 x 3
     #>               educ     n wt_frac
@@ -101,10 +101,10 @@ Q: What are the weights that correct for this imbalance?
     #> 3 3 [4-Year]        232.   0.232
     #> 4 4 [Post-Grad]     141.   0.141
 
-Q: What is the weighted proportion of `Y`? Is that closer to the
+Q 1.2: What is the weighted proportion of `Y`? Is that closer to the
 population proportion of Y than the unweighted proportion?
 
-Q: Extension: Explain how you would do the same reweighting but for
+Q 1.3: Extension: Explain how you would do the same reweighting but for
 education and race.
 
 -   What is the distribution of race and education in the population?
@@ -131,19 +131,20 @@ education and race.
     #>    Post-Grad     0.17  0.01     0.01  0.01      0.01 0.21
     #>    Sum           0.77  0.10     0.06  0.02      0.03 0.98
 
-Q: Estimate those weights. How does it differ from the previous weights?
+Q 1.4: Estimate those weights. How does it differ from the previous
+weights?
 
 ![](README_files/figure-gfm/twowayps-1.png)<!-- -->
 
-Q: What are some roadblocks / issues with doing poststratification
+Q 1.5: What are some roadblocks / issues with doing poststratification
 everywhere?
 
  
 
-## Raking: an approximation to full poststratification
+## 2. Raking: an approximation to full poststratification
 
-Q: Now suppose you did NOT know the population *joint* distribution of
-race x education, but you knew the *marginals*. Suppose that
+Q 2.1: Now suppose you did NOT know the population *joint* distribution
+of race x education, but you knew the *marginals*. Suppose that
 
 -   White (1): 72%
 -   Black (2): 12%
@@ -164,29 +165,29 @@ Using raking, create weights that satisfy these marginal distributions.
 
 ![](README_files/figure-gfm/cces_rake_weights-1.png)<!-- -->
 
-Q: Intuitively, what is the assumption we need to make for raking to
+Q 2.2: Intuitively, what is the assumption we need to make for raking to
 give the same answer as poststratification?
 
  
 
-## The Curse of Increased Variance due to Weighting
+## 3. The Curse of Increased Variance due to Weighting
 
 > “It is not always clear how to use weights in estimating anything more
 > complicated than a simple mean or ratios, and standard errors are
 > tricky even with simple weighted means.” — Gelman (2007)
 
-Q: What is a standard error of a survey estimator? How is it different
-from the standard deviation / variance of your estimates?
+Q 3.1 : What is a standard error of a survey estimator? How is it
+different from the standard deviation / variance of your estimates?
 
-Q: What do you need to compute the MSE (or RMSE) of an estimate? What
-are the components?
+Q 3.2 : What do you need to compute the MSE (or RMSE) of an estimate?
+What are the components?
 
-Q: Does weighting tend to increase or decrease the standard error of the
-estimator? The effective sample size? The design effect? Why?
+Q 3.3: Does weighting tend to increase or decrease the standard error of
+the estimator? The effective sample size? The design effect? Why?
 
  
 
-## How is MRP Different?
+## 4. How is MRP Different?
 
 > “Regression modeling is a potentially attractive alter- native to
 > weighting. In practice, however, the poten- tial for large numbers of
@@ -208,8 +209,8 @@ tgt_fct <- frame_fct %>%
   count(educ, race)
 ```
 
-Q: Using a logit, what are the predicted values of the outcome in each
-of the poststratification cells?
+Q 4.1: Using a logit, what are the predicted values of the outcome in
+each of the poststratification cells?
 
     #> # A tibble: 20 x 4
     #>    educ         race          n      Ypred
@@ -235,42 +236,42 @@ of the poststratification cells?
     #> 19 Post-Grad    Asian       114 0.250     
     #> 20 Post-Grad    All Other    57 0.500
 
-Q: What is the “MRP” estimate for Y in the population then?
+Q 4.2: What is the “MRP” estimate for Y in the population then?
 
     #> # A tibble: 1 x 1
     #>   Ypred
     #>   <dbl>
     #> 1 0.412
 
-Q: What are the issues with a simple logit?
+Q 4.3: What are the issues with a simple logit?
 
  
 
-## Why balancing score are better than inverse propensity weighting
+## 5. Why balancing score are better than inverse propensity weighting
 
 > “Contrary to what is assumed by many theoretical statisticians, survey
 > weights are not in general equal to inverse probabilities of selection
 > but rather are typically constructed based on a combination of prob-
 > ability calculations and nonresponse adjustments.” — Gelman (2007)
 
-Q: Using the population data and matching on ID, create a propensity
+Q 5.1: Using the population data and matching on ID, create a propensity
 score.
 
     #> # A tibble: 10 x 4
     #>    ID     race      educ          Spred
     #>    <chr>  <fct>     <fct>         <dbl>
-    #>  1 281731 White     Post-Grad    0.139 
-    #>  2 267393 White     Some College 0.0985
-    #>  3 274917 White     4-Year       0.155 
-    #>  4 293848 All Other 4-Year       0.114 
-    #>  5 305754 White     HS or Less   0.0683
-    #>  6 317915 White     HS or Less   0.0441
-    #>  7 299442 White     Some College 0.100 
-    #>  8 300508 Asian     4-Year       0.0731
-    #>  9 316016 White     Some College 0.0763
-    #> 10 271816 White     4-Year       0.135
+    #>  1 294322 White     Some College 0.118 
+    #>  2 318622 White     Some College 0.102 
+    #>  3 302957 All Other 4-Year       0.114 
+    #>  4 298317 Hispanic  HS or Less   0.0369
+    #>  5 292502 White     4-Year       0.122 
+    #>  6 318598 White     HS or Less   0.0827
+    #>  7 313610 White     Some College 0.0695
+    #>  8 288443 All Other 4-Year       0.117 
+    #>  9 288890 Black     Post-Grad    0.123 
+    #> 10 269228 White     Some College 0.0689
 
-Q: What are the issues in Propensity Score?
+Q 5.2: What are the issues in Propensity Score?
 
 Note: Links to Causal Inference and the Weighting vs. Matching
 Distinction
@@ -278,7 +279,8 @@ Distinction
 -   Coarsened Exact Matching
 -   Balance Test Fallacy
 
-Note: Balancing Scores: Entropy Balancing / CBPS
+Q 5.3: Compute a Covariate Balancing Score Weights from the small frame,
+and same with ebal scores
 
 Load packages and start with a small sample.
 
@@ -287,9 +289,6 @@ Load packages and start with a small sample.
     #>   <dbl> <int>
     #> 1     0   925
     #> 2     1    75
-
-Q: Compute a Covariate Balancing Score Weights from the small frame, and
-same with ebal scores
 
     #> Converged within tolerance
 
