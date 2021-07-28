@@ -11,7 +11,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Modern Weighting 2021
+# An Introduction to Modern Weighting (2021 Workshop)
+
+Shiro Kuriwaki
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -27,6 +29,8 @@ Load libraries
 ```{r, message=FALSE}
 library(tidyverse)
 library(scales)
+
+library(survey)
 library(autumn)
 library(lme4)
 ```
@@ -123,19 +127,58 @@ Q: What are some issues with doing poststratiifcation everywhere?
 
 Mean Square Error formula
 
+
+Q: What do you need to compute the MSE (or RMSE) of an estimate? What are the components?
+
+
+Q: Does weighting tend to increase or decrease the standard error of the estimator? The effective sample size? The design effect? Why?
+
+
+
 Kish's design effect
+
+```{r}
+rwt <- poll_rake$rake_weight
+
+sum(rwt)^2 / sum(rwt^2)
+
+nrow(poll_rake) / (sum(rwt)^2 / sum(rwt^2))
+
+var(rwt)
+
+design_effect(rwt)
+```
+
 
 
 # MRP
 
+```{r}
+poll_fct <- poll %>% 
+  mutate(educ = as_factor(educ), race = as_factor(race))
+
+tgt_fct <- pop_micro %>% 
+  mutate(educ = as_factor(educ), race = as_factor(race)) %>% 
+  count(educ, race)
+```
+
+
 Many cells problem
 
 ```{r}
-fit_logit <- glm(Y ~ educ*race, family = binomial, poll)
+fit_logit <- glm(Y ~ educ*race, data = poll_fct, family = binomial)
 
-pop_micro %>% 
-  count(educ, race) %>% 
+
+cells_Ypred <- tgt_fct %>% 
   mutate(Ypred = predict(fit_logit, ., type = "response"))
+
+cells_Ypred
+```
+
+
+```{r}
+cells_Ypred %>% 
+  summarize(Ypred = weighted.mean(Ypred, w = n))
 ```
 
 
@@ -152,3 +195,13 @@ Balance Test Fallacy
 
 Entropy Balancing / CBPS
 
+
+
+# References
+
+- Andrew Gelman. [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf). "Struggles with Survey Weighting and
+Regression Modeling", _Statistical Science_
+- Kosuke Imai, Gary King, Elizabeth A Stuart. [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf). "Misunderstandings between experimentalists and observationalists about causal inference", _JRSS A._
+- Kosuke Imai, Marc Ratkovic. [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).  "Covariate balancing propensity score", _JRSS B_.
+- Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). "Why Propensity Scores Should Not Be Used for Matching", _Methods Colloquium Talk_. (Article with Rich Nielsen).
+- Jens Hainmueller. [2012](https://web.stanford.edu/~jhain/Paper/PA2012.pdf). "Entropy Balancing for Causal Effects: A Multivariate Reweighting Method to Produce Balanced Samples in Observational Studies". _Political Analysis_

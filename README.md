@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Modern Weighting 2021
+# An Introduction to Modern Weighting (2021 Workshop)
+
+Shiro Kuriwaki
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -16,6 +18,8 @@ Load libraries
 ``` r
 library(tidyverse)
 library(scales)
+
+library(survey)
 library(autumn)
 library(lme4)
 ```
@@ -128,41 +132,83 @@ Q: What are some issues with doing poststratiifcation everywhere?
 
 Mean Square Error formula
 
+Q: What do you need to compute the MSE (or RMSE) of an estimate? What
+are the components?
+
+Q: Does weighting tend to increase or decrease the standard error of the
+estimator? The effective sample size? The design effect? Why?
+
 Kish’s design effect
 
+``` r
+rwt <- poll_rake$rake_weight
+
+sum(rwt)^2 / sum(rwt^2)
+#> [1] 627.6017
+
+nrow(poll_rake) / (sum(rwt)^2 / sum(rwt^2))
+#> [1] 1.593367
+
+var(rwt)
+#> [1] 0.5939613
+
+design_effect(rwt)
+#> [1] 1.593367
+```
+
 # MRP
+
+``` r
+poll_fct <- poll %>% 
+  mutate(educ = as_factor(educ), race = as_factor(race))
+
+tgt_fct <- pop_micro %>% 
+  mutate(educ = as_factor(educ), race = as_factor(race)) %>% 
+  count(educ, race)
+```
 
 Many cells problem
 
 ``` r
-fit_logit <- glm(Y ~ educ*race, family = binomial, poll)
+fit_logit <- glm(Y ~ educ*race, data = poll_fct, family = binomial)
 
-pop_micro %>% 
-  count(educ, race) %>% 
+
+cells_Ypred <- tgt_fct %>% 
   mutate(Ypred = predict(fit_logit, ., type = "response"))
+
+cells_Ypred
 #> # A tibble: 20 x 4
-#>                educ          race     n Ypred
-#>           <dbl+lbl>     <int+lbl> <int> <dbl>
-#>  1 1 [HS or Less]   1 [White]      2137 0.417
-#>  2 1 [HS or Less]   2 [Black]       275 0.402
-#>  3 1 [HS or Less]   3 [Hispanic]    182 0.387
-#>  4 1 [HS or Less]   4 [Asian]        36 0.373
-#>  5 1 [HS or Less]   5 [All Other]    87 0.358
-#>  6 2 [Some College] 1 [White]      2468 0.413
-#>  7 2 [Some College] 2 [Black]       538 0.410
-#>  8 2 [Some College] 3 [Hispanic]    296 0.406
-#>  9 2 [Some College] 4 [Asian]        74 0.402
-#> 10 2 [Some College] 5 [All Other]   172 0.398
-#> 11 3 [4-Year]       1 [White]      1611 0.409
-#> 12 3 [4-Year]       2 [Black]       280 0.417
-#> 13 3 [4-Year]       3 [Hispanic]    216 0.425
-#> 14 3 [4-Year]       4 [Asian]       122 0.433
-#> 15 3 [4-Year]       5 [All Other]    94 0.440
-#> 16 4 [Post-Grad]    1 [White]      1071 0.406
-#> 17 4 [Post-Grad]    2 [Black]       106 0.425
-#> 18 4 [Post-Grad]    3 [Hispanic]     64 0.444
-#> 19 4 [Post-Grad]    4 [Asian]       114 0.463
-#> 20 4 [Post-Grad]    5 [All Other]    57 0.483
+#>    educ         race          n      Ypred
+#>    <fct>        <fct>     <int>      <dbl>
+#>  1 HS or Less   White      2137 0.451     
+#>  2 HS or Less   Black       275 0.500     
+#>  3 HS or Less   Hispanic    182 0.400     
+#>  4 HS or Less   Asian        36 0.00000349
+#>  5 HS or Less   All Other    87 0.250     
+#>  6 Some College White      2468 0.375     
+#>  7 Some College Black       538 0.394     
+#>  8 Some College Hispanic    296 0.526     
+#>  9 Some College Asian        74 0.333     
+#> 10 Some College All Other   172 0.286     
+#> 11 4-Year       White      1611 0.391     
+#> 12 4-Year       Black       280 0.438     
+#> 13 4-Year       Hispanic    216 0.621     
+#> 14 4-Year       Asian       122 0.538     
+#> 15 4-Year       All Other    94 0.250     
+#> 16 Post-Grad    White      1071 0.422     
+#> 17 Post-Grad    Black       106 0.533     
+#> 18 Post-Grad    Hispanic     64 0.300     
+#> 19 Post-Grad    Asian       114 0.250     
+#> 20 Post-Grad    All Other    57 0.500
+```
+
+``` r
+cells_Ypred %>% 
+  summarize(Ypred = weighted.mean(Ypred, w = n))
+#> # A tibble: 1 x 1
+#>   Ypred
+#>   <dbl>
+#> 1 0.412
 ```
 
 Shrinkage
@@ -176,3 +222,25 @@ Coarsened Exact Matching
 Balance Test Fallacy
 
 Entropy Balancing / CBPS
+
+# References
+
+-   Andrew Gelman.
+    [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf).
+    “Struggles with Survey Weighting and Regression Modeling”,
+    *Statistical Science*
+-   Kosuke Imai, Gary King, Elizabeth A Stuart.
+    [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf).
+    “Misunderstandings between experimentalists and observationalists
+    about causal inference”, *JRSS A.*
+-   Kosuke Imai, Marc Ratkovic.
+    [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).
+    “Covariate balancing propensity score”, *JRSS B*.
+-   Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why
+    Propensity Scores Should Not Be Used for Matching”, *Methods
+    Colloquium Talk*. (Article with Rich Nielsen).
+-   Jens Hainmueller.
+    [2012](https://web.stanford.edu/~jhain/Paper/PA2012.pdf). “Entropy
+    Balancing for Causal Effects: A Multivariate Reweighting Method to
+    Produce Balanced Samples in Observational Studies”. *Political
+    Analysis*
