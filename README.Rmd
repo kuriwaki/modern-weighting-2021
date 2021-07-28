@@ -1,4 +1,5 @@
 ---
+title: Overview of Modern Survey Weighting
 output: github_document
 ---
 
@@ -12,11 +13,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview of Modern Survey Weighting
+_Shiro Kuriwaki_
 
-*Shiro Kuriwaki*
+_Last presented July 28, 2021_
 
-*July 28, 2021 Workshop*
+> "Survey weighting is a mess."  -- Gelman (2007)
+
 
 
 <!-- badges: start -->
@@ -28,7 +30,7 @@ Reweighting to make a dataset representative is a core  operation in data scienc
 
 ## Setup
 
-Download this repo as a **Rstudio Project** (From Remote Repository, Github, `"kuriwaki/modern-weighting-workshop-2021"`).
+Download this repo by [creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) a **Rstudio Project** of it (From Version Control Repository, Github, `"kuriwaki/modern-weighting-workshop-2021"`).
 
 Load libraries
 
@@ -52,7 +54,11 @@ pop_micro <- read_rds("data/pop_microdata.rds")
 
 
 
-## Poststratification
+## The Power and Simplicity of Poststratification
+
+> "The purpose of poststratification is to correct for known differences between sample and population."
+
+- Gelman (2007)
 
 Q: What is the distributon of education in the sample? In the population?
 
@@ -83,19 +89,32 @@ poll_wt %>%
 ```
 
 
-Q: Extension: do the same reweighting but for education and race.
+Q: Extension: Explain how you would do the same reweighting but for education and race.
+
+- What is the distribution of race and education in the population?
 
 ```{r}
 xtabs(~ as_factor(educ) + as_factor(race), pop_micro) %>% 
+  prop.table() %>% 
+  round(digits = 2) %>% 
   addmargins()
 ```
 
+- In the survey?
 
-## Raking
+```{r}
+xtabs(~ as_factor(educ) + as_factor(race), poll) %>% 
+  prop.table() %>% 
+  round(digits = 2) %>% 
+  addmargins()
+```
 
-Q: What is the distribution of race and education in the survey. 
+Q: What are some issues with doing poststratification everywhere?
 
-Now suppose you did NOT know the population _joint_ distribution of race x education, but you knew the _marginals_. Suppose that
+
+## Raking as an Approximation
+
+Q: Now suppose you did NOT know the population _joint_ distribution of race x education, but you knew the _marginals_. Suppose that
 
 * White (1): 72%
 * Black (2): 12%
@@ -127,9 +146,13 @@ with(poll_rake, plot(weight, rake_weight, bty = "n", pch = 19, cex = 0.5, xlab =
 ```
 
 
-Q: What are some issues with doing poststratiifcation everywhere?
+Q: Intuitively, what is the assumption we need to make for raking to give the same answer as poststratification?
 
-## Increased Variance Due to Weighting / Design Effect
+
+## The Curse of Increased Variance due to Weighting
+
+> "It is not always clear how to use weights in estimating anything more complicated than a simple mean or ratios, and standard errors are tricky even with simple weighted means. " --- Gelman (2007)
+
 
 
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What are the components?
@@ -153,6 +176,10 @@ design_effect(rwt)
 
 
 ## How is MRP Different?
+
+> "Regression modeling is a potentially attractive alter- native to weighting. In practice, however, the poten- tial for large numbers of interactions can make regres- sion adjustments highly variable. This paper reviews the motivation for hierarchical regression, combined with poststratification, as a strategy for correcting for differences between sample and population. --- Gelman (2007)
+
+
 
 Let's treat the values as factors now
 
@@ -192,8 +219,10 @@ cells_Ypred %>%
 Q: What are the issues with a simple logit?
 
 
+## Why balancing score are better than inverse propensity weighting
 
-## Propensity Score (IPW) vs. Balancing Score
+> "Contrary to what is assumed by many theoretical statisticians, survey weights are not in general equal to inverse probabilities of selection but rather are typically constructed based on a combination of prob- ability calculations and nonresponse adjustments." --- Gelman (2007)
+
 
 Q: Using the population data and matching on ID, create a propensity score.
 
@@ -217,12 +246,10 @@ pop_sel %>%
 Q: What are the issues in Propensity Score?
 
 
-
 Note: Links to Causal Inference and the Weighting vs. Matching Distinction
 
 - Coarsened Exact Matching
 - Balance Test Fallacy
-
 
 
 Note: Balancing Scores: Entropy Balancing / CBPS

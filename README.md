@@ -1,11 +1,13 @@
+Overview of Modern Survey Weighting
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Overview of Modern Survey Weighting
-
 *Shiro Kuriwaki*
 
-*July 28, 2021 Workshop*
+*Last presented July 28, 2021*
+
+> “Survey weighting is a mess.” – Gelman (2007)
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -27,8 +29,10 @@ bias-variance, OLS, and a bit of research design.
 
 ## Setup
 
-Download this repo as a **Rstudio Project** (From Remote Repository,
-Github, `"kuriwaki/modern-weighting-workshop-2021"`).
+Download this repo by
+[creating](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
+a **Rstudio Project** of it (From Version Control Repository, Github,
+`"kuriwaki/modern-weighting-workshop-2021"`).
 
 Load libraries
 
@@ -48,7 +52,12 @@ poll <- read_rds("data/poll.rds")
 pop_micro <- read_rds("data/pop_microdata.rds")
 ```
 
-## Poststratification
+## The Power and Simplicity of Poststratification
+
+> “The purpose of poststratification is to correct for known differences
+> between sample and population.”
+
+-   Gelman (2007)
 
 Q: What is the distributon of education in the sample? In the
 population?
@@ -78,22 +87,39 @@ Q: What are the weights that correct for this imbalance?
     #> 3 3 [4-Year]        232.   0.232
     #> 4 4 [Post-Grad]     141.   0.141
 
-Q: Extension: do the same reweighting but for education and race.
+Q: Extension: Explain how you would do the same reweighting but for
+education and race.
+
+-   What is the distribution of race and education in the population?
+
+<!-- -->
 
     #>                as_factor(race)
-    #> as_factor(educ) White Black Hispanic Asian All Other   Sum
-    #>    HS or Less    2137   275      182    36        87  2717
-    #>    Some College  2468   538      296    74       172  3548
-    #>    4-Year        1611   280      216   122        94  2323
-    #>    Post-Grad     1071   106       64   114        57  1412
-    #>    Sum           7287  1199      758   346       410 10000
+    #> as_factor(educ) White Black Hispanic Asian All Other  Sum
+    #>    HS or Less    0.21  0.03     0.02  0.00      0.01 0.27
+    #>    Some College  0.25  0.05     0.03  0.01      0.02 0.36
+    #>    4-Year        0.16  0.03     0.02  0.01      0.01 0.23
+    #>    Post-Grad     0.11  0.01     0.01  0.01      0.01 0.15
+    #>    Sum           0.73  0.12     0.08  0.03      0.05 1.01
 
-## Raking
+-   In the survey?
 
-Q: What is the distribution of race and education in the survey.
+<!-- -->
 
-Now suppose you did NOT know the population *joint* distribution of race
-x education, but you knew the *marginals*. Suppose that
+    #>                as_factor(race)
+    #> as_factor(educ) White Black Hispanic Asian All Other  Sum
+    #>    HS or Less    0.14  0.01     0.00  0.00      0.00 0.15
+    #>    Some College  0.24  0.03     0.02  0.00      0.01 0.30
+    #>    4-Year        0.22  0.05     0.03  0.01      0.01 0.32
+    #>    Post-Grad     0.17  0.01     0.01  0.01      0.01 0.21
+    #>    Sum           0.77  0.10     0.06  0.02      0.03 0.98
+
+Q: What are some issues with doing poststratification everywhere?
+
+## Raking as an Approximation
+
+Q: Now suppose you did NOT know the population *joint* distribution of
+race x education, but you knew the *marginals*. Suppose that
 
 -   White (1): 72%
 -   Black (2): 12%
@@ -110,9 +136,14 @@ and
 
 ![](README_files/figure-gfm/cces_rake_weights-1.png)<!-- -->
 
-Q: What are some issues with doing poststratiifcation everywhere?
+Q: Intuitively, what is the assumption we need to make for raking to
+give the same answer as poststratification?
 
-## Increased Variance Due to Weighting / Design Effect
+## The Curse of Increased Variance due to Weighting
+
+> “It is not always clear how to use weights in estimating anything more
+> complicated than a simple mean or ratios, and standard errors are
+> tricky even with simple weighted means.” — Gelman (2007)
 
 Q: What do you need to compute the MSE (or RMSE) of an estimate? What
 are the components?
@@ -121,6 +152,13 @@ Q: Does weighting tend to increase or decrease the standard error of the
 estimator? The effective sample size? The design effect? Why?
 
 ## How is MRP Different?
+
+> “Regression modeling is a potentially attractive alter- native to
+> weighting. In practice, however, the poten- tial for large numbers of
+> interactions can make regres- sion adjustments highly variable. This
+> paper reviews the motivation for hierarchical regression, combined
+> with poststratification, as a strategy for correcting for differences
+> between sample and population. — Gelman (2007)
 
 Let’s treat the values as factors now
 
@@ -171,7 +209,12 @@ Q: What is the “MRP” estimate for Y in the population then?
 
 Q: What are the issues with a simple logit?
 
-## Propensity Score (IPW) vs. Balancing Score
+## Why balancing score are better than inverse propensity weighting
+
+> “Contrary to what is assumed by many theoretical statisticians, survey
+> weights are not in general equal to inverse probabilities of selection
+> but rather are typically constructed based on a combination of prob-
+> ability calculations and nonresponse adjustments.” — Gelman (2007)
 
 Q: Using the population data and matching on ID, create a propensity
 score.
@@ -179,16 +222,16 @@ score.
     #> # A tibble: 10 x 4
     #>    ID     race     educ          Spred
     #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 268448 White    Some College 0.0986
-    #>  2 303033 White    Some College 0.0817
-    #>  3 281458 White    Some College 0.0993
-    #>  4 305564 White    HS or Less   0.122 
-    #>  5 279835 White    HS or Less   0.0896
-    #>  6 319874 White    HS or Less   0.0634
-    #>  7 273231 Black    Post-Grad    0.161 
-    #>  8 311155 Hispanic Some College 0.0798
-    #>  9 265916 White    HS or Less   0.0517
-    #> 10 271471 White    Some College 0.0993
+    #>  1 314876 Hispanic Some College 0.0777
+    #>  2 303445 White    4-Year       0.155 
+    #>  3 287173 Black    Post-Grad    0.161 
+    #>  4 278894 White    Some College 0.0817
+    #>  5 298566 Asian    Post-Grad    0.0835
+    #>  6 300886 White    4-Year       0.122 
+    #>  7 303433 Black    Some College 0.0805
+    #>  8 284030 White    Post-Grad    0.262 
+    #>  9 318971 Hispanic Post-Grad    0.109 
+    #> 10 273789 White    HS or Less   0.0644
 
 Q: What are the issues in Propensity Score?
 
