@@ -254,22 +254,26 @@ Q 4.3: What are the issues with a simple logit?
 > but rather are typically constructed based on a combination of prob-
 > ability calculations and nonresponse adjustments.” — Gelman (2007)
 
-Q 5.1: Using the population data and matching on ID, create a propensity
-score.
+Q 5.1: Using the population data and matching on ID, estimate a
+propensity score (probability of selection).
+
+-   First, merge on the poll to the survey
+
+<!-- -->
 
     #> # A tibble: 10 x 4
-    #>    ID     race      educ          Spred
-    #>    <chr>  <fct>     <fct>         <dbl>
-    #>  1 294322 White     Some College 0.118 
-    #>  2 318622 White     Some College 0.102 
-    #>  3 302957 All Other 4-Year       0.114 
-    #>  4 298317 Hispanic  HS or Less   0.0369
-    #>  5 292502 White     4-Year       0.122 
-    #>  6 318598 White     HS or Less   0.0827
-    #>  7 313610 White     Some College 0.0695
-    #>  8 288443 All Other 4-Year       0.117 
-    #>  9 288890 Black     Post-Grad    0.123 
-    #> 10 269228 White     Some College 0.0689
+    #>    ID     race     educ          Spred
+    #>    <chr>  <fct>    <fct>         <dbl>
+    #>  1 315055 White    Post-Grad    0.166 
+    #>  2 320965 White    Post-Grad    0.138 
+    #>  3 287401 White    4-Year       0.156 
+    #>  4 315032 White    HS or Less   0.0727
+    #>  5 308268 Asian    4-Year       0.0731
+    #>  6 283578 White    Some College 0.102 
+    #>  7 311890 Hispanic Post-Grad    0.139 
+    #>  8 268536 White    Post-Grad    0.126 
+    #>  9 284629 White    4-Year       0.122 
+    #> 10 284943 White    Some College 0.0985
 
 Q 5.2: What are the issues in Propensity Score?
 
@@ -278,17 +282,24 @@ Distinction
 
 -   Coarsened Exact Matching
 -   Balance Test Fallacy
+-   See Gary’s talk on “Why We Shouldn’t We use Propensity Scores for
+    Matching”. Propensity scores can be used for other things other than
+    matching (like weighting), but some of the same problems crop up.
 
 Q 5.3: Compute a Covariate Balancing Score Weights from the small frame,
 and same with ebal scores
 
 Load packages and start with a small sample.
 
-    #> # A tibble: 2 x 2
-    #>       S     n
-    #>   <dbl> <int>
-    #> 1     0   925
-    #> 2     1    75
+``` r
+library(ebal)
+library(CBPS)
+
+select <- dplyr::select # package conflict
+
+# matrix version of what we are about to fit
+frame_sel_X <- model.matrix(~ educ + race + state, frame_sel)[, -1]
+```
 
     #> Converged within tolerance
 

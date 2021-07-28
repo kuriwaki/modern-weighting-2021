@@ -296,7 +296,9 @@ $~$
 > "Contrary to what is assumed by many theoretical statisticians, survey weights are not in general equal to inverse probabilities of selection but rather are typically constructed based on a combination of prob- ability calculations and nonresponse adjustments." --- Gelman (2007)
 
 
-Q 5.1: Using the population data and matching on ID, create a propensity score.
+Q 5.1: Using the population data and matching on ID, estimate a propensity score (probability of selection).
+
+- First, merge on the poll to the survey
 
 ```{r}
 frame_sel <- left_join(
@@ -321,50 +323,45 @@ Note: Links to Causal Inference and the Weighting vs. Matching Distinction
 
 - Coarsened Exact Matching
 - Balance Test Fallacy
+- See Gary's talk on "Why We Shouldn't We use Propensity Scores for Matching". Propensity scores can be used for other things other than matching (like weighting), but some of the same problems crop up.
 
 
 Q 5.3: Compute a Covariate Balancing Score Weights from the small frame, and same with ebal scores
 
 Load packages and start with a small sample.
 
-```{r, message = FALSE}
+```{r, echo = TRUE, message = FALSE}
 library(ebal)
 library(CBPS)
 
-select <- dplyr::select
+select <- dplyr::select # package conflict
 
-
-set.seed(02130)
-frame_samp <- sample_frac(frame_sel, 0.10)
-count(frame_samp, S)
+# matrix version of what we are about to fit
+frame_sel_X <- model.matrix(~ educ + race + state, frame_sel)[, -1]
 ```
 
-```{r cbps}
-
-fit_cbps <- CBPS(S ~ race + educ + state, data = frame_samp, ATT = 0)
-
-
+```{r cbps, cache = TRUE}
+fit_cbps <- CBPS(S ~ race + educ + state, data = frame_sel, ATT = 0, iterations = 100)
 ```
 
-
-```{r}
-frame_samp_X <- model.matrix( ~ educ + race + state - 1, frame_samp)[, -1]
-
-fit_ebal <- ebalance(Treatment = frame_samp$S,
-                     X = frame_samp_X)
-
+```{r ebal, cache = TRUE}
+fit_ebal <- ebalance(Treatment = frame_sel$S, X = frame_sel_X)
 ```
 
 ```{r cbps-ebal}
 par(mfrow = c(1, 2))
-plot(frame_samp$weight[frame_samp$S == 1],
-     1 / fit_cbps$fitted.values[frame_samp$S == 1], 
+plot(x = frame_sel$weight[frame_sel$S == 1],
+     y = 1 / fit_cbps$fitted.values[frame_sel$S == 1], 
      bty = "n",
+     pch = 19,
+     cex = 0.5,
      xlab = "CCES weights",
      ylab = "1 over CBPS weights")
-plot(frame_samp$weight[frame_samp$S == 1],
-     fit_ebal$w[frame_samp$S == 1], 
+plot(x = frame_sel$weight[frame_sel$S == 1],
+     y = fit_ebal$w[frame_sel$S == 1], 
      bty = "n",
+     pch = 19,
+     cex = 0.5,
      xlab = "CCES weights",
      ylab = "ebal weights")
 ```
