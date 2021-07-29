@@ -60,10 +60,27 @@ poll <- read_rds("data/poll.rds")
 frame <- read_rds("data/pop_microdata.rds")
 ```
 
-Note: how to read this document. The preview on github is a compiled
-version of README.Rmd. The README.Rmd has the code to produce all the
-results, but the preview only shows the results. If you need to check
-the answers, you can check the Rmd. Alternatively, you can convert the
+**poll** is a survey of 1,000 people. It is a *biased* sample of the
+population, which we call **frame** (the sampling frame) here. Many
+times in a survey context we do not have a decent frame available, but
+we will use it here
+
+-   `Y` is a binary variable of outcome of interest (e.g. Yes to some
+    public opinion question). It is a synthetic variable I made up; the
+    content is not important here. It is not observed in the sampling
+    frame — the point of a poll is that you only observe the data of
+    interest in your sample, but you care about generalizing to the
+    population.
+-   `S` is an indicator for Selection / Survey Inclusion. It is recorded
+    in the frame. It is 1 if the item in the frame ended up in the
+    survey, 0 otherwise.
+-   `ID` is a common numeric ID for merging.
+-   All other variables follow the CCES / Cumulative CCES
+
+*How to read this document.* The preview on github is a compiled version
+of README.Rmd. The README.Rmd has the code to produce all the results,
+but the preview only shows the results. If you need to check the
+answers, you can check the Rmd. Alternatively, you can convert the
 solutions as a R script with `knitr::purl("README.Rmd")`.
 
  
@@ -257,23 +274,25 @@ Q 4.3: What are the issues with a simple logit?
 Q 5.1: Using the population data and matching on ID, estimate a
 propensity score (probability of selection).
 
--   First, merge on the poll to the survey
+-   `S` is a indicator in the frame which indicates the selection /
+    survey cases. 1 means the observation is also in `poll`, 0
+    otherwise.
 
 <!-- -->
 
     #> # A tibble: 10 x 4
     #>    ID     race     educ          Spred
     #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 315055 White    Post-Grad    0.166 
-    #>  2 320965 White    Post-Grad    0.138 
-    #>  3 287401 White    4-Year       0.156 
-    #>  4 315032 White    HS or Less   0.0727
-    #>  5 308268 Asian    4-Year       0.0731
-    #>  6 283578 White    Some College 0.102 
-    #>  7 311890 Hispanic Post-Grad    0.139 
-    #>  8 268536 White    Post-Grad    0.126 
-    #>  9 284629 White    4-Year       0.122 
-    #> 10 284943 White    Some College 0.0985
+    #>  1 302199 White    4-Year       0.120 
+    #>  2 273512 Black    Some College 0.0664
+    #>  3 291262 White    4-Year       0.120 
+    #>  4 325110 Hispanic HS or Less   0.0535
+    #>  5 294629 Black    Some College 0.0721
+    #>  6 313234 White    Some College 0.0993
+    #>  7 284479 White    4-Year       0.156 
+    #>  8 304144 White    4-Year       0.120 
+    #>  9 308732 Hispanic Some College 0.0593
+    #> 10 287150 Black    HS or Less   0.0575
 
 Q 5.2: What are the issues in Propensity Score?
 
@@ -298,10 +317,17 @@ library(CBPS)
 select <- dplyr::select # package conflict
 
 # matrix version of what we are about to fit
-frame_sel_X <- model.matrix(~ educ + race + state, frame_sel)[, -1]
+frame_X <- model.matrix(~ educ + race + state, frame_fct)[, -1]
 ```
 
-    #> Converged within tolerance
+``` r
+fit_cbps <- CBPS(S ~ race + educ + state, data = frame_fct, ATT = 0, iterations = 100)
+```
+
+``` r
+fit_ebal <- ebalance(Treatment = frame_fct$S, X = frame_X)
+#> Converged within tolerance
+```
 
 ![](README_files/figure-gfm/cbps-ebal-1.png)<!-- -->
 

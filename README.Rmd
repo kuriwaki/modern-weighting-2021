@@ -56,8 +56,15 @@ poll <- read_rds("data/poll.rds")
 frame <- read_rds("data/pop_microdata.rds")
 ```
 
+**poll** is a survey of 1,000 people. It is a _biased_ sample of the population, which we call **frame** (the sampling frame) here. Many times in a survey context we do not have a decent frame available, but we will use it here  
 
-Note: how to read this document. The preview on github is a compiled version of README.Rmd. The README.Rmd has the code to produce all the results, but the preview only shows the results. If you need to check the answers, you can check the Rmd. Alternatively, you can convert the solutions as a R script with `knitr::purl("README.Rmd")`.
+* `Y` is a binary variable of outcome of interest (e.g. Yes to some public opinion question). It is a synthetic variable I made up; the content is not important here. It is not observed in the sampling frame --- the point of a poll is that you only observe the data of interest in your sample, but you care about generalizing to the population.
+* `S` is an indicator for Selection / Survey Inclusion. It is recorded in the frame. It is 1 if the item in the frame ended up in the survey, 0 otherwise. 
+* `ID` is a common numeric ID for merging.
+* All other variables follow the CCES / Cumulative CCES
+
+
+_How to read this document._ The preview on github is a compiled version of README.Rmd. The README.Rmd has the code to produce all the results, but the preview only shows the results. If you need to check the answers, you can check the Rmd. Alternatively, you can convert the solutions as a R script with `knitr::purl("README.Rmd")`.
 
 
 $~$
@@ -298,18 +305,12 @@ $~$
 
 Q 5.1: Using the population data and matching on ID, estimate a propensity score (probability of selection).
 
-- First, merge on the poll to the survey
+- `S` is a indicator in the frame which indicates the selection / survey cases. 1 means the observation is also in `poll`, 0 otherwise.
 
 ```{r}
-frame_sel <- left_join(
-  frame_fct,
-  transmute(poll_fct, ID, S = 1),
-  by = "ID") %>% 
-  mutate(S = replace_na(S, 0))
+fit_sel <- glm(S ~ race + educ + state, frame_fct, family = binomial)
 
-fit_sel <- glm(S ~ race + educ + state, frame_sel, family = binomial)
-
-frame_sel %>% 
+frame_fct %>% 
   mutate(Spred = predict(fit_sel, ., type = "response")) %>% 
   select(ID, race, educ, Spred) %>% 
   sample_n(10)
@@ -337,28 +338,28 @@ library(CBPS)
 select <- dplyr::select # package conflict
 
 # matrix version of what we are about to fit
-frame_sel_X <- model.matrix(~ educ + race + state, frame_sel)[, -1]
+frame_X <- model.matrix(~ educ + race + state, frame_fct)[, -1]
 ```
 
-```{r cbps, cache = TRUE}
-fit_cbps <- CBPS(S ~ race + educ + state, data = frame_sel, ATT = 0, iterations = 100)
+```{r cbps, cache = TRUE, message=FALSE, echo = TRUE}
+fit_cbps <- CBPS(S ~ race + educ + state, data = frame_fct, ATT = 0, iterations = 100)
 ```
 
-```{r ebal, cache = TRUE}
-fit_ebal <- ebalance(Treatment = frame_sel$S, X = frame_sel_X)
+```{r ebal, cache = TRUE, message=FALSE, echo = TRUE}
+fit_ebal <- ebalance(Treatment = frame_fct$S, X = frame_X)
 ```
 
 ```{r cbps-ebal}
 par(mfrow = c(1, 2))
-plot(x = frame_sel$weight[frame_sel$S == 1],
-     y = 1 / fit_cbps$fitted.values[frame_sel$S == 1], 
+plot(x = frame_fct$weight[frame_fct$S == 1],
+     y = 1 / fit_cbps$fitted.values[frame_fct$S == 1], 
      bty = "n",
      pch = 19,
      cex = 0.5,
      xlab = "CCES weights",
      ylab = "1 over CBPS weights")
-plot(x = frame_sel$weight[frame_sel$S == 1],
-     y = fit_ebal$w[frame_sel$S == 1], 
+plot(x = frame_fct$weight[frame_fct$S == 1],
+     y = fit_ebal$w[frame_fct$S == 1], 
      bty = "n",
      pch = 19,
      cex = 0.5,
