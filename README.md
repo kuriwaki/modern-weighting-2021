@@ -281,18 +281,18 @@ propensity score (probability of selection).
 <!-- -->
 
     #> # A tibble: 10 x 4
-    #>    ID     race     educ          Spred
-    #>    <chr>  <fct>    <fct>         <dbl>
-    #>  1 302199 White    4-Year       0.120 
-    #>  2 273512 Black    Some College 0.0664
-    #>  3 291262 White    4-Year       0.120 
-    #>  4 325110 Hispanic HS or Less   0.0535
-    #>  5 294629 Black    Some College 0.0721
-    #>  6 313234 White    Some College 0.0993
-    #>  7 284479 White    4-Year       0.156 
-    #>  8 304144 White    4-Year       0.120 
-    #>  9 308732 Hispanic Some College 0.0593
-    #> 10 287150 Black    HS or Less   0.0575
+    #>    ID     race      educ          Spred
+    #>    <chr>  <fct>     <fct>         <dbl>
+    #>  1 307933 Hispanic  4-Year       0.0956
+    #>  2 323528 White     Post-Grad    0.176 
+    #>  3 301197 White     Some College 0.0985
+    #>  4 291737 White     Some College 0.135 
+    #>  5 270162 White     4-Year       0.147 
+    #>  6 276240 Black     Some College 0.0851
+    #>  7 288696 Hispanic  HS or Less   0.0499
+    #>  8 297716 Black     Post-Grad    0.121 
+    #>  9 301889 All Other Some College 0.0546
+    #> 10 283893 White     Some College 0.0763
 
 Q 5.2: What are the issues in Propensity Score?
 
@@ -344,6 +344,15 @@ fit_ebal <- ebalance(Treatment = frame_fct$S, X = frame_X)
 5.  **Balancing scores** guarantees balance on some marginals, while
     minimizing distance on others.
 
+# Resources for Data
+
+-   Use [`tidycensus`](https://walker-data.com/tidycensus/) to get
+    summary stats for the ACS, decennial Census
+-   For CCES, I have designed a package
+    [`cceMRPprep`](https://www.shirokuriwaki.com/ccesMRPprep/) for
+    commonly used functions.
+-   Use the `dataverse` package to download Dataverse datasets by code.
+
 # References
 
 -   Devin Caughey, Adam Berinsky, Sara Chatfield, Erin Hartman, Eric
@@ -367,10 +376,10 @@ fit_ebal <- ebalance(Treatment = frame_fct$S, X = frame_X)
     “Misunderstandings between experimentalists and observationalists
     about causal inference”, *JRSS A.*
 
--   Also see: Gary King.
-    [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why Propensity
-    Scores Should Not Be Used for Matching”, *Methods Colloquium Talk*.
-    (Article with Rich Nielsen).
+    -   Also see: Gary King.
+        [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). “Why
+        Propensity Scores Should Not Be Used for Matching”, *Methods
+        Colloquium Talk*. (Article with Rich Nielsen).
 
 -   Kosuke Imai, Marc Ratkovic.
     [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).
