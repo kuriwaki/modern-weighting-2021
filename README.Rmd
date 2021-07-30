@@ -385,14 +385,22 @@ plot(x = frame_fct$weight[frame_fct$S == 1],
 - Use the `dataverse` package to download Dataverse datasets by code.
 
 
-# References
+# Annotated Bibliography
 
 - Devin Caughey, Adam Berinsky, Sara Chatfield, Erin Hartman,  Eric Schickler, and Jas Sekhon. [2020](https://doi.org/10.1017/9781108879217). "Target Estimation and Adjustment Weighting for Survey Nonresponse and Sampling Bias". _Elements in Quantitative and Computational Methods for the Social Sciences_
+  - A good overview, up to date with modern survey sampling, and has enough math to clarify what goes on under the hood.
+- Kosuke Imai's Lecture [slides](https://imai.fas.harvard.edu/teaching/files/weighting.pdf) on Weighting (PhD level Causal Inference)
+  - Very condensed slide-level overview: IPW, Hajek, CBPS, ebal
 - Andrew Gelman. [2007](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf). "Struggles with Survey Weighting and
 Regression Modeling", _Statistical Science_
-- Paul Rosenbaum, Donald Rubin. [1983]. "The central role of the propensity score in observational studies for causal effects". _Biometrika_
+  - The intro is worth reading for general understanding. The main text actually turns into a proposal for what is essentially MRP.
+- Douglas Rivers. [2007](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.468.9645&rep=rep1&type=pdf). "Sampling for Web Surveys"
+   - One of the first papers that outlined the new changes for web, opt-in surveys.
+- Paul Rosenbaum, Donald Rubin. [1983](https://academic.oup.com/biomet/article-pdf/70/1/41/662954/70-1-41.pdf). "The central role of the propensity score in observational studies for causal effects". _Biometrika_
+   - One canonical reference for the idea of propensity score
 - Kosuke Imai, Gary King, Elizabeth Stuart. [2008](https://imai.fas.harvard.edu/research/files/matchse.pdf). "Misunderstandings between experimentalists and observationalists about causal inference", _JRSS A._
   - Also see: Gary King. [2007](https://www.youtube.com/watch?v=rBv39pK1iEs). "Why Propensity Scores Should Not Be Used for Matching", _Methods Colloquium Talk_. (Article with Rich Nielsen).
 - Kosuke Imai, Marc Ratkovic. [2014](https://imai.fas.harvard.edu/research/files/CBPS.pdf).  "Covariate balancing propensity score", _JRSS B_.
-
+   - Introduces `CBPS`
 - Jens Hainmueller. [2012](https://web.stanford.edu/~jhain/Paper/PA2012.pdf). "Entropy Balancing for Causal Effects: A Multivariate Reweighting Method to Produce Balanced Samples in Observational Studies". _Political Analysis_
+   - Introduces `ebal`
