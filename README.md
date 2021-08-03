@@ -3,9 +3,12 @@ Overview of Modern Survey Weighting
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-*Shiro Kuriwaki*
+*Shiro Kuriwaki* (Stanford University)
 
-*Last presented July 28, 2021*
+*Last presented: July 28, 2021*
+
+(I will be polishing the material, with a recording, in the coming
+months. Feedback and inquiries welcome.)
 
  
 
@@ -20,15 +23,16 @@ Reweighting your data to make it representative of a population of
 interest is a ubiquitous operation in data science and survey research.
 The procedure has fundamental connections to classical statistical
 theory. And recently, the connection between survey inference to causal
-inference is resurging: Selection bias has become prominent in opt-in
-surveys, and traditional approaches that focus on researcher-designed
-sampling have become somewhat irrelevant. However, survey weighting is
-not taught in standard political science graduate training. Here I walk
-through these core concepts taking the CCES as an example. I draw
-connections to concepts which are often covered in political science
-training, like causal inference or machine learning. I presume a level
-of familiarity with a 1st year PhD methods class covering bias-variance,
-OLS, and some research design.
+inference is resurging: Selection bias has become prominent, semi-opt-in
+online surveys are the norm, and traditional methods devised for
+researcher-designed sampling have become less relevant. One might refer
+to this change in the practice of surveying as the “modern” reality.
+However, survey weighting is not taught in standard political science
+graduate training. Here I walk through these core concepts taking the
+CCES as an example. I draw connections to concepts which are often
+covered in political science training, like causal inference or machine
+learning. I presume a level of familiarity with a 1st year PhD methods
+class covering bias-variance, OLS, and some research design.
 
 ------------------------------------------------------------------------
 
