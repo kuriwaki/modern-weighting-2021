@@ -1,0 +1,47 @@
+---
+title: "Problem Set 6"
+date: "Due 10/??/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+Since the 1950s, the German government conducts a 1\% sample of its residents. The U.S. Census Bureau also conducts a similar survey called the American Community Survey. Such surveys are the basis of many research articles, and the basis of even more government and private industry analytics. 
+
+
+In Canvas, download the Rds file \texttt{poll.rds}, which is a survey of $n =$ 1,000 from this German microdata. 
+
+It has the following variables:
+
+* `Y` is a binary variable of outcome of interest (e.g. Yes to some public opinion question). It is a synthetic variable I made up; the content is not important here. It is not observed in the sampling frame --- the point of a poll is that you only observe the data of interest in your sample, but you care about generalizing to the population.
+* `educ` is ...
+* `age` is ...
+* `employment` is ...
+
+Also download the Rds file `pop.rds` ($n=$ 100,000). This represents the population this poll was drawn from. In modern surveys, we do not have a  frame available, but we will use it here to explore the validity of weighting methods. 
+
+* In this data, `S` is an indicator for Selection / Survey Inclusion. It is recorded in the frame. It is 1 if the item in the frame ended up in the survey, 0 otherwise. 
+
+
+\bigskip
+
+The poll is a _biased_ sample of the population, so the goal is to make proper inferences about the population.  Load the data and answer the following questions.
+
+1.  What is the distribution of education within each region in the sample? In the population? Compute post-stratification weights for the poll that will correct for the imbalance.
+
+
+2. Compute the point estimate and standard error for the sample proportion of `Y` in region ___.  Provide two versions: one under the assumption that the sample is a simple random sample of the population, and one under the assumption that it is a biased sample, but the weights you estimated in 1 render the selection ignorable. In the process, report the Kish design effect and effective sample size with weights.
+
+1. For the subsequent question, we will use the population.  Using the population data and matching on ID, estimate a propensity score (probability of selection). Then, use that propensity score to compute the balance of `Y`. Do you reject the null hypothesis that the samples are balanced?
+
+
+2. Using the \texttt{CBPS} package (Imai et al.), compute a Covariate Balancing Score Weights from the small frame
+
+3. Using the \texttt{ebal} package (Hainmueller), compute the same sort of propensity score with entropy balancing propensity scores.
+
+4. Create a table with the point estimates from the previous three weights, as well as the raw sample proportion, the sample proportion from your weights, and the sample in the population. Which weighting has the lowest error?
+
