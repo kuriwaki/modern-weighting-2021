@@ -6,3 +6,15 @@
 README_cache
 recordings
 .DS_Store
+
+
+pop_GDR.rds
+svy_GDR.rds
+
+ps6_cache/
+ps6_files/
+ps6.pdf
+pset6/share/
+
+02_clean_MZ_1996_2016.r
+mz_1996_2016_clean.rds
