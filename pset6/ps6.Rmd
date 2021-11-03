@@ -5,6 +5,8 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -24,19 +26,60 @@ It has the following variables:
 
 Also download the Rds file `pop.rds` ($n=$ 100,000). This represents the population this poll was drawn from. In modern surveys, we do not have a  frame available, but we will use it here to explore the validity of weighting methods. 
 
-* In this data, `S` is an indicator for Selection / Survey Inclusion. It is recorded in the frame. It is 1 if the item in the frame ended up in the survey, 0 otherwise. 
+* In this data, `D` is an indicator for Selection / Survey Inclusion. It is recorded in the frame. It is 1 if the item in the frame ended up in the survey, 0 otherwise. 
 
 
 \bigskip
 
 The poll is a _biased_ sample of the population, so the goal is to make proper inferences about the population.  Load the data and answer the following questions.
 
+```{r}
+svy <- read_rds(here("data/samp_GDR.rds"))
+pop <- read_rds(here("data/pop_GDR.rds"))
+```
+
+
 1.  What is the distribution of education within each region in the sample? In the population? Compute post-stratification weights for the poll that will correct for the imbalance.
+
+```{r}
+count(svy, educ) %>% mutate(frac = n / sum(n))
+```
+
+```{r}
+count(pop, educ) %>% mutate(frac = n / sum(n))
+```
+
+
+```{r}
+count(pop, state, educ) %>% mutate(frac = n / sum(n))
+count(svy, state, educ) %>% mutate(frac = n / sum(n))
+```
 
 
 2. Compute the point estimate and standard error for the sample proportion of `Y` in region ___.  Provide two versions: one under the assumption that the sample is a simple random sample of the population, and one under the assumption that it is a biased sample, but the weights you estimated in 1 render the selection ignorable. In the process, report the Kish design effect and effective sample size with weights.
 
 1. For the subsequent question, we will use the population.  Using the population data and matching on ID, estimate a propensity score (probability of selection). Then, use that propensity score to compute the balance of `Y`. Do you reject the null hypothesis that the samples are balanced?
+
+```{r}
+propensity_fit <- glm(D ~ state + female + age, pop, family = binomial)
+
+
+dat_pi <- pop %>% 
+  mutate(est_pscore = predict(propensity_fit, type = "response"))
+
+xtabs(D ~ state + D, dat_pi) %>% 
+  prop.table(2) %>% 
+  round(2)
+
+dat_pi %>% 
+  sample_n(1e3) %>% 
+  ggplot(aes(x = pscore, y = est_pscore)) +
+  geom_point(size = 0.1) +
+  labs(x = "True Propensity Score",
+       y = "Estimated Propensity Score")
+
+```
+
 
 
 2. Using the \texttt{CBPS} package (Imai et al.), compute a Covariate Balancing Score Weights from the small frame
