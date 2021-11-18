@@ -63,10 +63,12 @@ hist(df_U$pscore)
 hist(df_U$theta)
 
 set.seed(194301)
-df_samp <- samp_pscore(df_U, varname = pscore, n = 1000)
+df_samp <- samp_pscore(df_U, varname = pscore, n = 1000) %>%
+  arrange(ID)
 
 df_pop <- df_U %>%
   mutate(D = as.integer(ID %in% df_samp$ID)) %>%
+  arrange(ID) %>%
   relocate(ID, Y, D)
 
 mean(df_pop$Y)
@@ -78,4 +80,4 @@ mean(df_samp$abitur)
 cor(df_pop$theta, df_pop$abitur)
 
 write_rds(df_pop, "data/pop_GDR.rds")
-write_rds(df_samp, "data/samp_GDR.rds")
+write_rds(df_samp, "data/svy_GDR.rds")

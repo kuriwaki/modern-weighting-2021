@@ -10,7 +10,7 @@ library(here)
 library(survey)
 library(tidyverse)
 library(kableExtra)
-knitr::opts_chunk$set(echo=TRUE, eval=TRUE, cache=TRUE)
+knitr::opts_chunk$set(echo=TRUE, eval=TRUE, cache=FALSE)
 ```
 
 
