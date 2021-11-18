@@ -1,0 +1,103 @@
+%% === math ====
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{amsthm}
+\usepackage{bm}
+\allowdisplaybreaks
+\usepackage[labelfont=bf]{caption}
+
+%% === font ===
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.8]{beramono}
+
+
+%% === hyperlink ===
+\usepackage{xcolor}
+\definecolor{linkcolor}{HTML}{0645AD}
+\definecolor{crimson}{HTML}{A41034}
+
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     allcolors    = linkcolor,%porange,
+     %allcolors=[rgb]{0,0.53,0.70}%{.15,.53,.52}%{0.58,0.27, 0.31}
+}
+
+
+%% === math operators ===
+\def\*#1{\mathbf{#1}}
+\DeclareMathOperator*{\plim}{plim}
+
+\newcommand{\argmax}{\mathop{\rm arg~max}\limits}
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+% \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\inner}[1]{\left\langle#1\right\rangle}
+\DeclareMathOperator*{\minimize}{minimize}
+
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\hS}{\mathbb{S}}
+\newcommand{\hP}{\mathbb{P}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bN}{\mathbf{N}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bZ}{\mathbf{Z}}
+
+\newcommand{\notimplies}{\;\not\!\!\!\implies}
+
+\newcommand{\bdelta}{\boldsymbol{\delta}}
+\newcommand{\bxi}{\boldsymbol{\xi}}
+
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\bNstar}{\bN^*}
+\newcommand{\bPstar}{\bP^*}
+\newcommand{\indep}{\!\perp\!\!\!\perp}
+
+%% === theorems ===
+% \theoremstyle{definition}
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{proposition}{Proposition}%[section]
+\newtheorem{corollary}{Corollary}%[theorem]
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+\newtheorem{condition}{Condition}
+\newtheorem{result}{Result}
+\newtheorem{example}{Example}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+%% === equation numbering ===
+\numberwithin{equation}{section}
+
+%% === useful packages ===
+\usepackage{setspace}
+\usepackage{pdfpages}
+\usepackage{booktabs}
+
+%% === algorithm ===
+% \usepackage[boxruled]{algorithm2e}
+
+% === tikz ===
+\usepackage{tikz}
+% \usetikzlibrary{positioning,chains,fit,shapes,calc}
+
+%% === bib ===
+
+%  \usepackage[authordate,backend=biber]{biblatex-chicago}
+% \addbibresource{proxy.bib}
+
