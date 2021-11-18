@@ -184,9 +184,10 @@ svyd_rake <- rake(
   population.margins = list(edu_margins, state_margins))
 
 # standardize
-svy_rake <- svy_pscore %>% 
+svy_rake <- svy %>% 
   mutate(w_rake = 1/svyd_rake$prob,
-         w_rake = w_rake / mean(w_rake))
+         w_rake = w_rake / mean(w_rake)) %>% 
+  left_join(select(svy_pscore, ID, w_ps2), by = "ID")
 ```
 
 
