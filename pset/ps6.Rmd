@@ -1,6 +1,6 @@
 ---
-title: "**Problem Set 6**"
-date: "Due 11/10/2021"
+title: "**Problem Set**"
+date: "Stanford University"
 output: pdf_document
 geometry: margin=1.25in
 ---

@@ -5,10 +5,9 @@ Overview of Modern Survey Weighting
 
 *Shiro Kuriwaki* (Stanford University)
 
-*Last presented: July 28, 2021*
+*Last presented: October 2021*
 
-(I will be polishing the material, with a recording, in the coming
-months. Feedback and inquiries welcome.)
+(Sample problem set in [`pset`](pset) folder)
 
  
 
@@ -97,14 +96,14 @@ solutions as a R script with `knitr::purl("README.Rmd")`.
 Q: What is the distribution of education in the sample? In the
 population?
 
-    #> # A tibble: 4 x 3
+    #> # A tibble: 4 × 3
     #>               educ     n frac 
     #>          <dbl+lbl> <int> <chr>
     #> 1 1 [HS or Less]     166 17%  
     #> 2 2 [Some College]   309 31%  
     #> 3 3 [4-Year]         313 31%  
     #> 4 4 [Post-Grad]      212 21%
-    #> # A tibble: 4 x 3
+    #> # A tibble: 4 × 3
     #>               educ     n frac 
     #>          <dbl+lbl> <int> <chr>
     #> 1 1 [HS or Less]    2717 27%  
@@ -114,7 +113,7 @@ population?
 
 Q 1.1: What are the weights that correct for this imbalance?
 
-    #> # A tibble: 4 x 3
+    #> # A tibble: 4 × 3
     #>               educ     n wt_frac
     #>          <dbl+lbl> <dbl>   <dbl>
     #> 1 1 [HS or Less]    272.   0.272
@@ -233,7 +232,7 @@ tgt_fct <- frame_fct %>%
 Q 4.1: Using a logit, what are the predicted values of the outcome in
 each of the poststratification cells?
 
-    #> # A tibble: 20 x 4
+    #> # A tibble: 20 × 4
     #>    educ         race          n      Ypred
     #>    <fct>        <fct>     <int>      <dbl>
     #>  1 HS or Less   White      2137 0.451     
@@ -259,7 +258,7 @@ each of the poststratification cells?
 
 Q 4.2: What is the “MRP” estimate for Y in the population then?
 
-    #> # A tibble: 1 x 1
+    #> # A tibble: 1 × 1
     #>   Ypred
     #>   <dbl>
     #> 1 0.412
@@ -284,7 +283,7 @@ propensity score (probability of selection).
 
 <!-- -->
 
-    #> # A tibble: 10 x 4
+    #> # A tibble: 10 × 4
     #>    ID     race      educ          Spred
     #>    <chr>  <fct>     <fct>         <dbl>
     #>  1 307933 Hispanic  4-Year       0.0956

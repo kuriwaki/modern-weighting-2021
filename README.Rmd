@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 
 _Shiro Kuriwaki_ (Stanford University)
 
-_Last presented: July 28, 2021_ 
+_Last presented: October 2021_ 
 
-(I will be polishing the material, with a recording, in the coming months. Feedback and inquiries welcome.)
+(Sample problem set in [`pset`](pset) folder)
 
 $~$
 
